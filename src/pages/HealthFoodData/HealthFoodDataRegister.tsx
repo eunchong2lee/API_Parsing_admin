@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import MetaTags from "react-meta-tags";
 import {
   Col,
@@ -9,7 +9,12 @@ import {
   Label,
   Input,
   Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
+import StandardComponent from "./Standard";
 import axios from "axios";
 import Dropzone from "react-dropzone";
 import Select from "react-select";
@@ -21,8 +26,11 @@ import { Editor } from "react-draft-wysiwyg";
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
+import { AvForm, AvField } from "availity-reactstrap-validation";
+
 import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 import { CardBody, Card } from "reactstrap";
+import { isMetaProperty } from "typescript";
 // import "./_product.scss";
 
 const HealthFoodDataRegister = () => {
@@ -43,9 +51,60 @@ const HealthFoodDataRegister = () => {
     PRMS_STANDARD: '예시) {"진세노사이드 Rg1, Rb1 및 Rg3의 합":"8.4mg"}',
   };
 
+  // modal
+  const [RegistModal, setRegistModal] = useState(false);
+
+  const toggle = () => setRegistModal(!RegistModal);
+
+  //
+
   const [data, setData] = useState<any>(setting);
   const [selectedMulti, setselectedMulti] = useState(null);
   const [selectedFiles, setselectedFiles] = useState<any>([]);
+
+  ////////////// 성분 //////////////////
+  interface InputItem {
+    standard: string;
+    quantity: string;
+  }
+
+  //   const nextID = useRef<number>(1);
+  const [inputItems, setInputItems] = useState<InputItem[]>([
+    { standard: "ex) 아연, 진세노사이드", quantity: "ex) 10mg, 20ug" },
+  ]);
+
+  // 추가
+  function addInput() {
+    const input = {
+      standard: "ex) 아연, 진세노사이드",
+      quantity: "ex) 10mg, 20ug",
+    };
+
+    setInputItems([...inputItems, input]); // 기존 값에 새로운 인풋객체를 추가해준다.
+    // nextID.current += 1; // id값은 1씩 늘려준다.
+  }
+
+  // 삭제
+  function deleteInput() {
+    const parse_length = inputItems.length - 1;
+    setInputItems(
+      inputItems.filter((item, index) => {
+        return index != parse_length;
+      })
+    );
+  }
+
+  // Change
+  const standardChange =
+    (index: number) => (e: { target: { value: any; name: any } }) => {
+      const { value, name } = e.target;
+
+      const new_inputItems: any = inputItems;
+      new_inputItems[index][name] = value;
+      setInputItems(new_inputItems);
+      console.log(inputItems);
+    };
+  /////////////////////////////////////
 
   const onChange = (e: { target: { value: any; name: any } }) => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
@@ -58,16 +117,25 @@ const HealthFoodDataRegister = () => {
 
   const postData = async () => {
     const formData = new FormData();
+    let final_data = data;
+    let parse_data: any = new Object();
+    if (inputItems.length) {
+      for (let i = 0; i < inputItems.length; i++) {
+        const key = inputItems[i].standard;
+        const value = inputItems[i].quantity;
+        parse_data[key] = value;
+      }
+    }
+
+    final_data.PRMS_STANDARD = parse_data;
     formData.append("file", selectedFiles[0]);
     formData.append("data", JSON.stringify(data));
 
-    console.log("formData", formData.get("file"));
-    console.log("formData", formData.get("data"));
-
     await axios
-      .post("http://localhost:3000/item/test", formData)
+      .post("http://localhost:3000/item", formData)
       .then(response => {
         console.log("response", response.data);
+        window.location.href = `/HealthFoodData`;
       })
       .catch(err => {
         console.log(err);
@@ -124,7 +192,7 @@ const HealthFoodDataRegister = () => {
             <Card>
               <CardBody>
                 <h5 className="card-title mb-4">일반 상품 등록</h5>
-                <form>
+                <AvForm>
                   <div className="card border shadow-none mb-5">
                     <div className="card-header d-flex align-items-center">
                       <div className="flex-shrink-0 me-3">
@@ -149,14 +217,18 @@ const HealthFoodDataRegister = () => {
                               >
                                 상품명(PRDUCT)
                               </label>
-                              <input
-                                name="PRDUCT"
-                                type="text"
-                                className="form-control"
-                                id="PRDUCT"
-                                placeholder={data.PRDUCT}
-                                onChange={onChange}
-                              />
+                              <div>
+                                <AvField
+                                  name="PRDUCT"
+                                  type="text"
+                                  className="form-control"
+                                  id="PRDUCT"
+                                  placeholder="hello"
+                                  errorMessage="Email invalid or already in use"
+                                  value={data.PRDUCT}
+                                  onChange={onChange}
+                                />
+                              </div>
                             </div>
                           </Col>
                         </Row>
@@ -174,6 +246,7 @@ const HealthFoodDataRegister = () => {
                                 type="text"
                                 className="form-control"
                                 id="STTEMNT_NO"
+                                required
                                 placeholder={data.STTEMNT_NO}
                                 onChange={onChange}
                               />
@@ -194,6 +267,7 @@ const HealthFoodDataRegister = () => {
                                 type="text"
                                 className="form-control"
                                 id="ENTRPS"
+                                required
                                 placeholder={data.ENTRPS}
                                 onChange={onChange}
                               />
@@ -345,78 +419,88 @@ const HealthFoodDataRegister = () => {
                     </CardBody>
                   </div>
 
-                  <div className="card border shadow-none mb-5">
+                  <div className="card border shadow-none">
                     <div className="card-header d-flex align-items-center">
                       <div className="flex-shrink-0 me-3">
                         <div className="avatar-sm">
                           <div className="avatar-title rounded-circle bg-soft-primary text-primary">
-                            02
+                            2
                           </div>
                         </div>
                       </div>
                       <div className="flex-grow-1">
-                        <h5 className="card-title">건강 정보</h5>
+                        <h5 className="card-title">건강 성분</h5>
                       </div>
+                      <div>
+                        <Button
+                          color="danger"
+                          outline
+                          size=""
+                          onClick={() => {
+                            deleteInput();
+                          }}
+                        >
+                          -
+                        </Button>{" "}
+                        <Button
+                          color="primary"
+                          outline
+                          size=""
+                          onClick={() => {
+                            addInput();
+                          }}
+                        >
+                          +
+                        </Button>
+                      </div>
+
+                      <div></div>
                     </div>
                     <CardBody>
                       <Row>
-                        <Col lg={6}>
-                          <div className="mb-3">
-                            <Row>
-                              <label
-                                className="form-label"
-                                htmlFor="gen-info-name-input"
-                              >
-                                성분
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="gen-info-name-input"
-                                placeholder="예시) 38,000 원"
-                              />
-                              <div>&nbsp;&nbsp;</div>
-                            </Row>
-                          </div>
+                        <Col lg={2}>
+                          <label htmlFor="workexperience-designation-input">
+                            성분명
+                          </label>
                         </Col>
-                        <Col lg={6}>
-                          <div className="mb-3">
-                            <label
-                              className="form-label"
-                              htmlFor="gen-info-name-input"
-                            >
-                              효능
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="gen-info-name-input"
-                              placeholder="예시) 8,000 원"
-                            />
-                          </div>
+                        <Col lg={3}>
+                          <label htmlFor="workexperience-designation-input">
+                            성분량
+                          </label>
                         </Col>
                       </Row>
-                      <Row>
-                        <Col lg={6}>
-                          <div className="mb-3">
-                            <Row>
-                              <label
-                                className="form-label"
-                                htmlFor="gen-info-name-input"
-                              >
-                                섭취정보
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="gen-info-name-input"
-                                placeholder="예시) 38,000 원"
-                              />
-                              <div>&nbsp;&nbsp;</div>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
+                      {inputItems.map((item, index) => (
+                        <div key={index}>
+                          <Row>
+                            <Col lg={2}>
+                              <div className="mb-3" key={index}>
+                                <input
+                                  key={index}
+                                  type="text"
+                                  name="standard"
+                                  className="form-control"
+                                  id="workexperience-designation-input"
+                                  placeholder={item.standard}
+                                  onChange={standardChange(index)}
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={3}>
+                              <div className="mb-3" key={index}>
+                                <input
+                                  key={index}
+                                  type="text"
+                                  name="quantity"
+                                  className="form-control"
+                                  id="workexperience-designation-input"
+                                  placeholder={item.quantity}
+                                  onChange={standardChange(index)}
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
+                      ))}
                     </CardBody>
                   </div>
 
@@ -434,84 +518,95 @@ const HealthFoodDataRegister = () => {
                       </div>
                     </div>
                     <CardBody>
-                      <Form>
-                        <Dropzone
-                          onDrop={acceptedFiles => {
-                            handleAcceptedFiles(acceptedFiles);
-                          }}
-                        >
-                          {({ getRootProps, getInputProps }) => (
-                            <div className="dropzone">
-                              <div
-                                className="dz-message needsclick"
-                                {...getRootProps()}
-                              >
-                                <input {...getInputProps()} />
-                                <div className="mb-3">
-                                  <i className="display-4 text-muted uil uil-cloud-upload"></i>
-                                </div>
-                                <h4>Drop files here or click to upload.</h4>
+                      <Dropzone
+                        onDrop={acceptedFiles => {
+                          handleAcceptedFiles(acceptedFiles);
+                        }}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone">
+                            <div
+                              className="dz-message needsclick"
+                              {...getRootProps()}
+                            >
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="display-4 text-muted uil uil-cloud-upload"></i>
                               </div>
+                              <h4>Drop files here or click to upload.</h4>
                             </div>
-                          )}
-                        </Dropzone>
-                        <div
-                          className="dropzone-previews mt-3"
-                          id="file-previews"
-                        >
-                          {selectedFiles.map((f: any, i: number) => {
-                            return (
-                              <Card
-                                className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                                key={i + "-file"}
-                              >
-                                <div className="p-2">
-                                  <Row className="align-items-center">
-                                    <Col className="col-auto">
-                                      <img
-                                        data-dz-thumbnail=""
-                                        height="80"
-                                        className="avatar-sm rounded bg-light"
-                                        alt={f.name}
-                                        src={f.preview}
-                                      />
-                                    </Col>
-                                    <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
-                                      >
-                                        {f.name}
-                                      </Link>
-                                      <p className="mb-0">
-                                        <strong>{f.formattedSize}</strong>
-                                      </p>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              </Card>
-                            );
-                          })}
-                        </div>
-                      </Form>
+                          </div>
+                        )}
+                      </Dropzone>
+                      <div
+                        className="dropzone-previews mt-3"
+                        id="file-previews"
+                      >
+                        {selectedFiles.map((f: any, i: number) => {
+                          return (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={i + "-file"}
+                            >
+                              <div className="p-2">
+                                <Row className="align-items-center">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      height="80"
+                                      className="avatar-sm rounded bg-light"
+                                      alt={f.name}
+                                      src={f.preview}
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {f.name}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{f.formattedSize}</strong>
+                                    </p>
+                                  </Col>
+                                </Row>
+                              </div>
+                            </Card>
+                          );
+                        })}
+                      </div>
                     </CardBody>
                   </div>
 
                   <div className="submit-button-item text-end">
-                    <button
-                      type="button"
-                      className="btn btn1 btn-primary w-sm"
-                      onClick={() => {
-                        console.log(
-                          "start================================================================"
-                        );
-                        postData();
-                      }}
-                    >
+                    <Button color="primary" type="button" onClick={toggle}>
                       상품 등록
-                    </button>
+                    </Button>
+                    <Modal isOpen={RegistModal} toggle={toggle}>
+                      {/* <Modal isOpen={modal} toggle={toggle} {...args}> */}
+                      <ModalHeader toggle={toggle}>
+                        상품을 등록하겠습니까?
+                      </ModalHeader>
+                      <ModalBody>상품을 등록하겠습니까?</ModalBody>
+                      <ModalFooter>
+                        <Button
+                          color="primary"
+                          type="button"
+                          onClick={() => {
+                            toggle();
+                            postData();
+                          }}
+                        >
+                          예
+                        </Button>{" "}
+                        <Button color="secondary" onClick={toggle}>
+                          아니요
+                        </Button>
+                      </ModalFooter>
+                    </Modal>
                   </div>
-                </form>
+                </AvForm>
               </CardBody>
             </Card>
           </div>

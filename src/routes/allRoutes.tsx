@@ -167,6 +167,10 @@ import HealthFoodDataDetail from "src/pages/HealthFoodData/HealthFoodDataDetail"
 import HealthFoodDataRegister from "src/pages/HealthFoodData/HealthFoodDataRegister";
 import HealthFoodDataRevise from "src/pages/HealthFoodData/HealthFoodDataRevise";
 
+// Auth
+import LoginPage from "../pages/Auth/Login";
+import RegisterIndividual from "../pages/Auth/Register";
+
 interface RouteProps {
   path: string;
   component: any;
@@ -295,7 +299,7 @@ const userRoutes: Array<RouteProps> = [
   { path: "/HealthFoodData", component: HealthFoodData },
   { path: "/HealthFoodDataRegister", component: HealthFoodDataRegister },
   { path: "/HealthFoodData/:id", component: HealthFoodDataDetail },
-  { path: "/HealthFoodDataRevise", component: HealthFoodDataRevise },
+  { path: "/HealthFoodDataRevise/:id", component: HealthFoodDataRevise },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
@@ -304,9 +308,9 @@ const userRoutes: Array<RouteProps> = [
 
 const authRoutes: Array<RouteProps> = [
   //Authentication pages
-  { path: "/login", component: Login },
+  // { path: "/login", component: Login },
   { path: "/logout", component: Logout },
-  { path: "/register", component: Register },
+  // { path: "/register", component: Register },
   { path: "/forgot-password", component: ForgetPwd },
 
   // Authentication Inner
@@ -337,6 +341,10 @@ const authRoutes: Array<RouteProps> = [
   //utility page
   { path: "/pages-comingsoon", component: PagesComingsoon },
   { path: "/pages-maintenance", component: PageMaintenance },
+
+  // auth
+  { path: "/login", component: LoginPage },
+  { path: "/register", component: RegisterIndividual },
 ];
 
 export { userRoutes, authRoutes };

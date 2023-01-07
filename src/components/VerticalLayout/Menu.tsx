@@ -985,12 +985,6 @@ const menuItems: Array<MenuItemsProps> = [
         link: "/HealthFoodDataRegister",
         parentId: 141,
       },
-      {
-        id: 147,
-        label: "건강식품 수정",
-        link: "/HealthFoodDataRevise",
-        parentId: 141,
-      },
     ],
   },
 ];
