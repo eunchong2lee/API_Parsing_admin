@@ -55,9 +55,10 @@ const HealthFoodDataRevise = () => {
         .get(`http://localhost:3000/item/${id}`)
         .then(response => {
           if (response.data) {
-            const data = response.data;
-            setData(data);
-            setCopyData(data);
+            console.log("data 받아왔습니다.");
+            const responsedata = response.data;
+            setData(responsedata);
+            setCopyData(responsedata);
             const JSON_data = JSON.parse(data.PRMS_STANDARD);
             const data_length = Object.keys(JSON_data);
             const input_item = [];
@@ -91,6 +92,8 @@ const HealthFoodDataRevise = () => {
   // cancel onclie
   const CancelClick = () => {
     setCopyData(data);
+    setInputItems(inputcopyItems);
+    setselectedFiles([]);
   };
 
   ////////////// 성분 //////////////////
@@ -138,14 +141,18 @@ const HealthFoodDataRevise = () => {
 
   const onChange = (e: { target: { value: any; name: any } }) => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+    console.log(value, name);
     setCopyData({
       ...data, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
     console.log(copydata);
+    console.log(data);
   };
 
-  const postData = async () => {
+  const putData = async () => {
+    const url = window.location.href;
+    const id = url.split("/")[url.split("/").length - 1];
     const formData = new FormData();
     let final_data = data;
     let parse_data: any = new Object();
@@ -162,14 +169,14 @@ const HealthFoodDataRevise = () => {
     formData.append("file", selectedFiles[0]);
     formData.append("data", JSON.stringify(data));
 
-    // await axios
-    //   .post("http://localhost:3000/item", formData)
-    //   .then(response => {
-    //     console.log("response", response.data);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    await axios
+      .put(`http://localhost:3000/item/${id}`, formData)
+      .then(response => {
+        console.log("response", response.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   function handleMulti(selectedMulti: any) {
@@ -252,7 +259,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="PRDUCT"
-                                placeholder={copydata.PRDUCT}
+                                value={copydata.PRDUCT}
                                 onChange={onChange}
                               />
                             ) : (
@@ -278,7 +285,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="STTEMNT_NO"
-                                placeholder={copydata.STTEMNT_NO}
+                                value={copydata.STTEMNT_NO}
                                 onChange={onChange}
                               />
                             ) : (
@@ -304,7 +311,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="ENTRPS"
-                                placeholder={copydata.ENTRPS}
+                                value={copydata.ENTRPS}
                                 onChange={onChange}
                               />
                             ) : (
@@ -331,7 +338,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="MAIN_FNCTN"
-                                placeholder={copydata.MAIN_FNCTN}
+                                value={copydata.MAIN_FNCTN}
                                 onChange={onChange}
                               />
                             ) : (
@@ -357,7 +364,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="REGIST_DT"
-                                placeholder={copydata.REGIST_DT}
+                                value={copydata.REGIST_DT}
                                 onChange={onChange}
                               />
                             ) : (
@@ -383,7 +390,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="DISTB_PD"
-                                placeholder={copydata.DISTB_PD}
+                                value={copydata.DISTB_PD}
                                 onChange={onChange}
                               />
                             ) : (
@@ -409,7 +416,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="SUNGSANG"
-                                placeholder={copydata.SUNGSANG}
+                                value={copydata.SUNGSANG}
                                 onChange={onChange}
                               />
                             ) : (
@@ -435,7 +442,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="SRV_USE"
-                                placeholder={copydata.SRV_USE}
+                                value={copydata.SRV_USE}
                                 onChange={onChange}
                               />
                             ) : (
@@ -461,7 +468,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="PRSRV_PD"
-                                placeholder={copydata.PRSRV_PD}
+                                value={copydata.PRSRV_PD}
                                 onChange={onChange}
                               />
                             ) : (
@@ -487,7 +494,7 @@ const HealthFoodDataRevise = () => {
                                 type="text"
                                 className="form-control"
                                 id="INTAKE_HINT1"
-                                placeholder={copydata.INTAKE_HINT1}
+                                value={copydata.INTAKE_HINT1}
                                 onChange={onChange}
                               />
                             ) : (
@@ -650,7 +657,75 @@ const HealthFoodDataRevise = () => {
                         className="dropzone-previews mt-3"
                         id="file-previews"
                       >
-                        {selectedFiles.length ? (
+                        {data.PRMS_IMG ? (
+                          selectedFiles.length ? (
+                            selectedFiles.map((f: any, i: number) => {
+                              return (
+                                <Card
+                                  className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                                  key={i + "-file"}
+                                >
+                                  <div className="p-2">
+                                    <Row className="align-items-center">
+                                      <Col className="col-auto">
+                                        <img
+                                          data-dz-thumbnail=""
+                                          height="80"
+                                          className="avatar-sm rounded bg-light"
+                                          alt={f.name}
+                                          src={f.preview}
+                                        />
+                                      </Col>
+                                      <Col>
+                                        <Link
+                                          to="#"
+                                          className="text-muted font-weight-bold"
+                                        >
+                                          {f.name}
+                                        </Link>
+                                        <p className="mb-0">
+                                          {/* <strong>{f.formattedSize}</strong> */}
+                                        </p>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                </Card>
+                              );
+                            })
+                          ) : (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={1}
+                            >
+                              <div className="p-2">
+                                <Row className="align-items-center">
+                                  <Col className="col-auto">
+                                    <div>
+                                      <img
+                                        data-dz-thumbnail=""
+                                        height="80"
+                                        className="avatar-sm rounded bg-light"
+                                        alt={data.PRDUCT}
+                                        src={data.PRMS_IMG}
+                                      />
+                                    </div>
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {data.PRDUCT}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{}</strong>
+                                    </p>
+                                  </Col>
+                                </Row>
+                              </div>
+                            </Card>
+                          )
+                        ) : (
                           selectedFiles.map((f: any, i: number) => {
                             return (
                               <Card
@@ -684,38 +759,6 @@ const HealthFoodDataRevise = () => {
                               </Card>
                             );
                           })
-                        ) : (
-                          <Card
-                            className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                            key={1}
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col className="col-auto">
-                                  <div>
-                                    <img
-                                      data-dz-thumbnail=""
-                                      height="80"
-                                      className="avatar-sm rounded bg-light"
-                                      alt={data.PRDUCT}
-                                      src={data.PRMS_IMG}
-                                    />
-                                  </div>
-                                </Col>
-                                <Col>
-                                  <Link
-                                    to="#"
-                                    className="text-muted font-weight-bold"
-                                  >
-                                    {data.PRDUCT}
-                                  </Link>
-                                  <p className="mb-0">
-                                    <strong>{}</strong>
-                                  </p>
-                                </Col>
-                              </Row>
-                            </div>
-                          </Card>
                         )}
                       </div>
                     </Form>
@@ -762,7 +805,7 @@ const HealthFoodDataRevise = () => {
                                 onClick={() => {
                                   Revisetoggle();
                                   onChangeToggle(0);
-                                  postData();
+                                  putData();
                                 }}
                               >
                                 예
