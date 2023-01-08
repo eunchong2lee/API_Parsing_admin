@@ -45,7 +45,8 @@ const LoginPage = ({ history }: LoginProps) => {
     await axios
       .post(`http://localhost:3000/auth/login`, data)
       .then(response => {
-        console.log(response);
+        console.log(response.data.token);
+        localStorage.setItem("accessToken", response.data.token);
       });
   };
 
