@@ -14,26 +14,26 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import StandardComponent from "./Standard";
+
 import axios from "axios";
 import Dropzone from "react-dropzone";
-import Select from "react-select";
+
 import { Link } from "react-router-dom";
 import "flatpickr/dist/themes/material_blue.css";
-import Flatpickr from "react-flatpickr";
-import { Editor } from "react-draft-wysiwyg";
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 import { AvForm, AvField } from "availity-reactstrap-validation";
 
-import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 import { CardBody, Card } from "reactstrap";
-import { isMetaProperty } from "typescript";
-// import "./_product.scss";
+import StandardSearch from "./StandardSearch";
+
+// component
 
 const HealthFoodDataRegister = () => {
+  const [loading, setLoading] = useState(false);
+
   const setting = {
     PRDUCT: "예시) 6년근고려홍삼황제정스틱",
     STTEMNT_NO: "예시) 201600065981",
@@ -95,15 +95,18 @@ const HealthFoodDataRegister = () => {
   }
 
   // Change
-  const standardChange =
-    (index: number) => (e: { target: { value: any; name: any } }) => {
-      const { value, name } = e.target;
 
-      const new_inputItems: any = inputItems;
-      new_inputItems[index][name] = value;
-      setInputItems(new_inputItems);
-      console.log(inputItems);
-    };
+  const standardChange = (
+    index: number,
+    e: { target: { value: any; name: any } }
+  ) => {
+    const { value, name } = e.target;
+    console.log(value, name, index);
+
+    const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
+    new_inputItems[index][name] = value;
+    setInputItems(new_inputItems);
+  };
   /////////////////////////////////////
 
   const onChange = (e: { target: { value: any; name: any } }) => {
@@ -175,6 +178,28 @@ const HealthFoodDataRegister = () => {
     { label: "Php", value: "Php" },
     { label: "Python", value: "Python" },
   ];
+
+  ////////////////////////////////////////////////////////////////
+  // data 값 변경
+
+  const searchstandardChange = (data: any) => {
+    const low_data = data.low_data;
+    const index = data.index;
+
+    const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
+    new_inputItems[index]["standard"] = low_data;
+    setInputItems(new_inputItems);
+    console.log(inputItems);
+  };
+
+  // low component data
+  const HighSearch = async (low_data: any) => {
+    try {
+      searchstandardChange(low_data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="page-content">
@@ -480,8 +505,8 @@ const HealthFoodDataRegister = () => {
                                   name="standard"
                                   className="form-control"
                                   id="workexperience-designation-input"
-                                  placeholder={item.standard}
-                                  onChange={standardChange(index)}
+                                  placeholder={item.standard || ""}
+                                  onChange={standardChange.bind(null, index)}
                                 />
                               </div>
                             </Col>
@@ -493,10 +518,17 @@ const HealthFoodDataRegister = () => {
                                   name="quantity"
                                   className="form-control"
                                   id="workexperience-designation-input"
-                                  placeholder={item.quantity}
-                                  onChange={standardChange(index)}
+                                  placeholder={item.quantity || ""}
+                                  onChange={standardChange.bind(null, index)}
                                 />
                               </div>
+                            </Col>
+                            <Col lg={3}>
+                              <StandardSearch
+                                index={index}
+                                value={HighSearch}
+                                propFunction={HighSearch}
+                              ></StandardSearch>
                             </Col>
                           </Row>
                         </div>

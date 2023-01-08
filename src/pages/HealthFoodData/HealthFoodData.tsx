@@ -18,7 +18,6 @@ import paginationFactory, {
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import ProductSearchForm from "src/components/ProductionLayout/ProductSearch";
-import { createECDH } from "crypto";
 
 axios.defaults.withCredentials = true;
 

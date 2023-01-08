@@ -16,20 +16,15 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Dropzone from "react-dropzone";
-import Select from "react-select";
 import { Link, useLocation } from "react-router-dom";
 import "flatpickr/dist/themes/material_blue.css";
-import Flatpickr from "react-flatpickr";
-import { Editor } from "react-draft-wysiwyg";
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
-import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 import { CardBody, Card } from "reactstrap";
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import CardProject from "../Projects/ProjectGrid/card-project";
-// import "./_product.scss";
+// component
+import StandardSearch from "./StandardSearch";
 
 const HealthFoodDataRevise = () => {
   const [data, setData] = useState<any>([]);
@@ -51,6 +46,10 @@ const HealthFoodDataRevise = () => {
   const [errortoggle, setErrortoggle] = useState<number>(0);
   const ErrorToggle = (statusCode: number) => setErrortoggle(statusCode);
 
+  //   const nextID = useRef<number>(1);
+  const [inputItems, setInputItems] = useState<InputItem[]>([]);
+  const [inputcopyItems, setInputcopyItems] = useState<InputItem[]>([]);
+
   // Base Data
   const GetOneData = async () => {
     try {
@@ -67,16 +66,17 @@ const HealthFoodDataRevise = () => {
             setCopyData(responsedata);
             const JSON_data = JSON.parse(responsedata.PRMS_STANDARD);
             const data_length = Object.keys(JSON_data);
-            const input_item = [];
+            const input_item: any = [];
             for (let i = 0; i < data_length.length; i++) {
               const key = Object.keys(JSON_data)[i];
               const value = JSON_data[Object.keys(JSON_data)[i]];
               const new_object: InputItem = { standard: key, quantity: value };
               input_item.push(new_object);
             }
+            const copyinput_item = JSON.parse(JSON.stringify(input_item));
 
             setInputItems(input_item);
-            setInputcopyItems(input_item);
+            setInputcopyItems(copyinput_item);
           }
         });
     } catch (err) {
@@ -108,10 +108,6 @@ const HealthFoodDataRevise = () => {
     quantity: string;
   }
 
-  //   const nextID = useRef<number>(1);
-  const [inputItems, setInputItems] = useState<InputItem[]>([]);
-  const [inputcopyItems, setInputcopyItems] = useState<InputItem[]>([]);
-
   // 추가
   function addInput() {
     const input = {
@@ -134,15 +130,18 @@ const HealthFoodDataRevise = () => {
   }
 
   // Change
-  const standardChange =
-    (index: number) => (e: { target: { value: any; name: any } }) => {
-      const { value, name } = e.target;
+  const standardChange = (
+    index: number,
+    e: { target: { value: any; name: any } }
+  ) => {
+    const { value, name } = e.target;
+    console.log(value, name, index);
 
-      const new_inputItems: any = inputItems;
-      new_inputItems[index][name] = value;
-      setInputItems(new_inputItems);
-      console.log(inputItems);
-    };
+    const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
+    new_inputItems[index][name] = value;
+    setInputItems(new_inputItems);
+    console.log(inputItems, inputcopyItems);
+  };
   /////////////////////////////////////
 
   const onChange = (e: { target: { value: any; name: any } }) => {
@@ -196,11 +195,6 @@ const HealthFoodDataRevise = () => {
 
         setInputItems(input_item);
         setInputcopyItems(input_item);
-        return (
-          <Modal isOpen={true}>
-            <ModalHeader>123123</ModalHeader>
-          </Modal>
-        );
       })
       .catch(err => {
         console.log(err);
@@ -466,7 +460,7 @@ const HealthFoodDataRevise = () => {
                             </label>
                             {toggle ? (
                               <input
-                                name="SUNGSANG"
+                                name="SRV_USE"
                                 type="text"
                                 className="form-control"
                                 id="SRV_USE"
@@ -492,7 +486,7 @@ const HealthFoodDataRevise = () => {
                             </label>
                             {toggle ? (
                               <input
-                                name="SUNGSANG"
+                                name="PRSRV_PD"
                                 type="text"
                                 className="form-control"
                                 id="PRSRV_PD"
@@ -592,28 +586,26 @@ const HealthFoodDataRevise = () => {
                           <div key={index}>
                             <Row>
                               <Col lg={3}>
-                                <div className="mb-3" key={index}>
+                                <div className="mb-3">
                                   <input
-                                    key={index}
-                                    type="text"
                                     name="standard"
+                                    type="text"
                                     className="form-control"
-                                    id="workexperience-designation-input"
-                                    placeholder={item.standard}
-                                    onChange={standardChange(index)}
+                                    id="standard"
+                                    value={inputItems[index].standard}
+                                    onChange={standardChange.bind(null, index)}
                                   />
                                 </div>
                               </Col>
                               <Col lg={3}>
-                                <div className="mb-3" key={index}>
+                                <div className="mb-3">
                                   <input
-                                    key={index}
                                     type="text"
                                     name="quantity"
                                     className="form-control"
-                                    id="workexperience-designation-input"
-                                    placeholder={item.quantity}
-                                    onChange={standardChange(index)}
+                                    id="quantity"
+                                    value={item.quantity}
+                                    onChange={standardChange.bind(null, index)}
                                   />
                                 </div>
                               </Col>
