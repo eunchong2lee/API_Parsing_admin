@@ -1,7 +1,17 @@
 import MetaTags from "react-meta-tags";
 import React, { useState } from "react";
 
-import { Row, Col, Alert, Container } from "reactstrap";
+import {
+  Row,
+  Col,
+  Alert,
+  Container,
+  ModalHeader,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from "reactstrap";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -47,6 +57,7 @@ const LoginPage = ({ history }: LoginProps) => {
       .then(response => {
         console.log(response.data.token);
         localStorage.setItem("accessToken", response.data.token);
+        window.location.href = `http://localhost:3100/HealthFoodData`;
       });
   };
 

@@ -719,7 +719,7 @@ const HealthFoodDataRevise = () => {
                             >
                               <div className="p-2">
                                 <Row className="align-items-center">
-                                  <Col className="col-auto">
+                                  <Col className="col-auto" lg={6}>
                                     <div>
                                       <img
                                         data-dz-thumbnail=""

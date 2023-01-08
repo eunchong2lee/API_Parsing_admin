@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { Row, Col, Alert, Container } from "reactstrap";
+import {
+  Row,
+  Col,
+  Alert,
+  Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Button,
+  ModalFooter,
+} from "reactstrap";
 
 // availity-reactstrap-validation
 import { AvForm, AvField } from "availity-reactstrap-validation";
@@ -14,11 +24,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+import "../../components/ProductionLayout/_healthItem.scss";
+
 const ACCCOUNT_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
+const checkaccount = /^[a-z0-9]{4,16}$/;
+
+const regexaccount = (value: string) => {
+  return checkaccount.test(value);
+};
+
 const RegisterIndividual = () => {
   const dispatch = useDispatch();
+
+  const [message, setMessage] = useState("");
+
+  const [checkmodal, setCheckmodal] = useState(false);
+  const Checkmodal = () => setCheckmodal(!checkmodal);
 
   const { user, registrationError } = useSelector((state: any) => ({
     user: state.register.user,
@@ -40,6 +63,27 @@ const RegisterIndividual = () => {
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
     console.log(data);
+  };
+
+  const checkAccount = async () => {
+    console.log("check요청");
+    const checkresponse = regexaccount(data.account);
+    if (checkresponse == false) {
+      setMessage("영소문자 숫자만 사용가능하고 4글자이상 16글자 이하입니다.");
+      Checkmodal();
+      return;
+    }
+    await axios
+      .post(`http://localhost:3000/auth/checkaccount`, data)
+      .then(response => {
+        console.log(response.data);
+        if (response.data == 200) {
+          console.log("사용 가능합니다.");
+        } else {
+          setMessage("사용 불가능한 아이디입니다.");
+          Checkmodal();
+        }
+      });
   };
 
   const singUP = async () => {
@@ -160,15 +204,43 @@ const RegisterIndividual = () => {
                         onChange={onChange}
                       />
                     </div>
+
                     <div className="form-floating form-floating-custom mb-3">
-                      <AvField
-                        name="account"
-                        label="아이디"
-                        type="text"
-                        required
-                        placeholder="영어 소문자 및 숫자로만, 4~16자리"
-                        onChange={onChange}
-                      />
+                      <Row>
+                        <Col lg={9}>
+                          <AvField
+                            name="account"
+                            label="아이디"
+                            type="text"
+                            required
+                            placeholder="영어 소문자 및 숫자로만, 4~16자리"
+                            onChange={onChange}
+                          />
+                        </Col>
+                        <Col>
+                          <div className="check-account">
+                            <button
+                              className="register-btn-info btn btn-info w-40"
+                              type="submit"
+                              onClick={() => {
+                                checkAccount();
+                              }}
+                            >
+                              체크
+                            </button>
+                          </div>
+                          <Modal isOpen={checkmodal} toggle={Checkmodal}>
+                            {/* <Modal isOpen={modal} toggle={toggle} {...args}> */}
+                            <ModalHeader toggle={Checkmodal}>에러</ModalHeader>
+                            <ModalBody>{message}</ModalBody>
+                            <ModalFooter>
+                              <Button color="primary" onClick={Checkmodal}>
+                                확인
+                              </Button>
+                            </ModalFooter>
+                          </Modal>
+                        </Col>
+                      </Row>
                     </div>
                     <div className="form-floating form-floating-custom mb-3">
                       <AvField
