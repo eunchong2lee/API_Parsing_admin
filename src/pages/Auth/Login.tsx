@@ -1,5 +1,5 @@
 import MetaTags from "react-meta-tags";
-import React from "react";
+import React, { useState } from "react";
 
 import { Row, Col, Alert, Container } from "reactstrap";
 
@@ -18,6 +18,7 @@ import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props
 
 // actions
 import { loginUser, socialLogin } from "../../slices/thunks";
+import axios from "axios";
 
 //import images
 // import logoDark from "../../assets/images/bodybuddy-original-logo.png";
@@ -28,6 +29,26 @@ interface LoginProps {
 }
 
 const LoginPage = ({ history }: LoginProps) => {
+  const [data, setData] = useState<any>({});
+
+  const onChange = (e: { target: { value: any; name: any } }) => {
+    const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+    setData({
+      ...data, // 기존의 input 객체를 복사한 뒤
+      [name]: value, // name 키를 가진 값을 value 로 설정
+    });
+    console.log(data);
+  };
+
+  const SignIn = async () => {
+    console.log(data);
+    await axios
+      .post(`http://localhost:3000/auth/login`, data)
+      .then(response => {
+        console.log(response);
+      });
+  };
+
   const dispatch = useDispatch();
 
   const { error } = useSelector((state: any) => ({
@@ -36,7 +57,7 @@ const LoginPage = ({ history }: LoginProps) => {
 
   // handleValidSubmit
   const handleValidSubmit = (event: any, values: any) => {
-    dispatch(loginUser(values, history));
+    // dispatch(loginUser(values, history));
   };
 
   const signIn = (res: any, type: any) => {
@@ -104,12 +125,12 @@ const LoginPage = ({ history }: LoginProps) => {
                     {error ? <Alert color="danger">{error}</Alert> : null}
                     <div className="form-floating form-floating-custom mb-3">
                       <AvField
-                        name="email"
-                        label="이메일"
-                        value="admin@themesbrand.com"
+                        name="account"
+                        label="아이디"
                         className="form-control"
-                        placeholder="Enter email"
-                        type="email"
+                        placeholder="Enter account"
+                        type="text"
+                        onChange={onChange}
                         required
                       />
                     </div>
@@ -117,9 +138,9 @@ const LoginPage = ({ history }: LoginProps) => {
                       <AvField
                         name="password"
                         label="패스워드"
-                        value="123456"
                         type="password"
                         className="form-control"
+                        onChange={onChange}
                         required
                         placeholder="Enter Password"
                       />
@@ -127,7 +148,13 @@ const LoginPage = ({ history }: LoginProps) => {
                     <div className="form-check form-check-info font-size-16"></div>
 
                     <div className="mt-3">
-                      <button className="btn btn-info w-100" type="submit">
+                      <button
+                        className="btn btn-info w-100"
+                        type="submit"
+                        onClick={() => {
+                          SignIn();
+                        }}
+                      >
                         Log In
                       </button>
                     </div>

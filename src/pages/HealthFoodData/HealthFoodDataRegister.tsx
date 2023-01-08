@@ -189,7 +189,7 @@ const HealthFoodDataRegister = () => {
     const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
     new_inputItems[index]["standard"] = low_data;
     setInputItems(new_inputItems);
-    console.log(inputItems);
+    console.log(inputItems, "변경");
   };
 
   // low component data

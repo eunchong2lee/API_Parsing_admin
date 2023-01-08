@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
 import { Row, Col, Alert, Container } from "reactstrap";
 
@@ -12,10 +12,7 @@ import { registerUser } from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Link } from "react-router-dom";
-
-// import images
-// import logoDark from "../../assets/images/bodybuddy-original-logo.png";
-// import logolight from "../../assets/images/bodybuddy-original-logo.png";
+import axios from "axios";
 
 const ACCCOUNT_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -29,9 +26,33 @@ const RegisterIndividual = () => {
     loading: state.register.loading,
   }));
 
+  const [data, setData] = useState<any>({});
+
   // handleValidSubmit
   const handleValidSubmit = (values: any) => {
-    dispatch(registerUser(values));
+    // dispatch(registerUser(values));
+  };
+
+  const onChange = (e: { target: { value: any; name: any } }) => {
+    const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+    setData({
+      ...data, // 기존의 input 객체를 복사한 뒤
+      [name]: value, // name 키를 가진 값을 value 로 설정
+    });
+    console.log(data);
+  };
+
+  const singUP = async () => {
+    console.log("가입요청");
+    console.log(data);
+    await axios
+      .post(`http://localhost:3000/auth/signup`, data)
+      .then(response => {
+        console.log(response);
+        if (response.status === 200) {
+          window.location.href = `/login`;
+        }
+      });
   };
 
   useEffect(() => {
@@ -82,35 +103,38 @@ const RegisterIndividual = () => {
 
                     <div className="form-floating form-floating-custom mb-3">
                       <AvField
-                        name="username"
+                        name="managerName"
                         label="담당자 이름"
                         type="text"
                         required
                         placeholder="담당자 이름 입력"
+                        onChange={onChange}
                       />
                     </div>
                     <div className="form-display">
                       <div className="form-width form-floating form-floating-custom mb-3">
                         <AvField
-                          id="businessStatus"
-                          name="businessStatus"
+                          id="dept"
+                          name="dept"
                           label="부서"
                           className="form-control"
                           placeholder="부서를 입력해주세요"
-                          type="email"
+                          type="text"
                           required
+                          onChange={onChange}
                         />
                       </div>
 
                       <div className="form-width form-floating form-floating-custom mb-3">
                         <AvField
-                          id="businessType"
-                          name="businessType"
+                          id="position"
+                          name="position"
                           label="직급"
                           className="form-control"
                           placeholder="직급을 입력해주세요"
-                          type="email"
+                          type="text"
                           required
+                          onChange={onChange}
                         />
                       </div>
                     </div>
@@ -121,8 +145,9 @@ const RegisterIndividual = () => {
                         label="이메일"
                         className="form-control"
                         placeholder="이메일 주소를 입력해주세요"
-                        type="email"
+                        type="text"
                         required
+                        onChange={onChange}
                       />
                     </div>
                     <div className="form-floating form-floating-custom mb-3">
@@ -132,15 +157,17 @@ const RegisterIndividual = () => {
                         type="text"
                         required
                         placeholder="-없이 숫자만 입력"
+                        onChange={onChange}
                       />
                     </div>
                     <div className="form-floating form-floating-custom mb-3">
                       <AvField
-                        name="phone"
+                        name="account"
                         label="아이디"
                         type="text"
                         required
                         placeholder="영어 소문자 및 숫자로만, 4~16자리"
+                        onChange={onChange}
                       />
                     </div>
                     <div className="form-floating form-floating-custom mb-3">
@@ -150,6 +177,7 @@ const RegisterIndividual = () => {
                         type="password"
                         required
                         placeholder="영어, 숫자, 특수문자 조합 8~16자리"
+                        onChange={onChange}
                       />
                     </div>
 
@@ -163,7 +191,13 @@ const RegisterIndividual = () => {
                     </div>
 
                     <div className="mt-3">
-                      <button className="btn btn-info w-100" type="submit">
+                      <button
+                        className="btn btn-info w-100"
+                        type="submit"
+                        onClick={() => {
+                          singUP();
+                        }}
+                      >
                         Register
                       </button>
                     </div>
