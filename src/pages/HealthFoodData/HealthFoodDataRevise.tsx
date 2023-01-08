@@ -34,19 +34,24 @@ import CardProject from "../Projects/ProjectGrid/card-project";
 const HealthFoodDataRevise = () => {
   const [data, setData] = useState<any>([]);
   const [copydata, setCopyData] = useState<any>([]);
+
   const [selectedMulti, setselectedMulti] = useState(null);
   const [selectedFiles, setselectedFiles] = useState<any>([]);
   // useEffect memory
   const [loading, setLoading] = useState(false);
 
+  // 수정 완료 취소
   const [toggle, setToggle] = useState(0);
 
   // modal toggle
   const [ReviseModal, setReviseModal] = useState(false);
   const Revisetoggle = () => setReviseModal(!ReviseModal);
 
-  // Base Data
+  // 에러 모달창
+  const [errortoggle, setErrortoggle] = useState<number>(0);
+  const ErrorToggle = (statusCode: number) => setErrortoggle(statusCode);
 
+  // Base Data
   const GetOneData = async () => {
     try {
       const url = window.location.href;
@@ -54,17 +59,18 @@ const HealthFoodDataRevise = () => {
       const response = await axios
         .get(`http://localhost:3000/item/${id}`)
         .then(response => {
+          console.log(response);
           if (response.data) {
             console.log("data 받아왔습니다.");
             const responsedata = response.data;
             setData(responsedata);
             setCopyData(responsedata);
-            const JSON_data = JSON.parse(data.PRMS_STANDARD);
+            const JSON_data = JSON.parse(responsedata.PRMS_STANDARD);
             const data_length = Object.keys(JSON_data);
             const input_item = [];
             for (let i = 0; i < data_length.length; i++) {
-              const key = Object.keys(JSON_data)[0];
-              const value = JSON_data[Object.keys(JSON_data)[0]];
+              const key = Object.keys(JSON_data)[i];
+              const value = JSON_data[Object.keys(JSON_data)[i]];
               const new_object: InputItem = { standard: key, quantity: value };
               input_item.push(new_object);
             }
@@ -143,11 +149,10 @@ const HealthFoodDataRevise = () => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
     console.log(value, name);
     setCopyData({
-      ...data, // 기존의 input 객체를 복사한 뒤
+      ...copydata, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
     console.log(copydata);
-    console.log(data);
   };
 
   const putData = async () => {
@@ -163,16 +168,39 @@ const HealthFoodDataRevise = () => {
         parse_data[key] = value;
       }
     }
-    console.log(data, copydata);
+    console.log(inputItems, inputcopyItems);
 
     final_data.PRMS_STANDARD = parse_data;
+    console.log(final_data);
     formData.append("file", selectedFiles[0]);
-    formData.append("data", JSON.stringify(data));
+    formData.append("data", JSON.stringify(copydata));
 
     await axios
       .put(`http://localhost:3000/item/${id}`, formData)
       .then(response => {
-        console.log("response", response.data);
+        const responsedata = response.data;
+        console.log(responsedata);
+        responsedata.PRMS_STANDARD = JSON.stringify(responsedata.PRMS_STANDARD);
+        setData(responsedata);
+        setCopyData(responsedata);
+        console.log(responsedata);
+        const JSON_data = JSON.parse(responsedata.PRMS_STANDARD);
+        const data_length = Object.keys(JSON_data);
+        const input_item = [];
+        for (let i = 0; i < data_length.length; i++) {
+          const key = Object.keys(JSON_data)[i];
+          const value = JSON_data[Object.keys(JSON_data)[i]];
+          const new_object: InputItem = { standard: key, quantity: value };
+          input_item.push(new_object);
+        }
+
+        setInputItems(input_item);
+        setInputcopyItems(input_item);
+        return (
+          <Modal isOpen={true}>
+            <ModalHeader>123123</ModalHeader>
+          </Modal>
+        );
       })
       .catch(err => {
         console.log(err);
