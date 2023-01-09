@@ -47,8 +47,11 @@ const HealthFoodData = () => {
       const response = await axios.get(
         `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&limit=10`
       );
-      console.log(response.data);
-      setData(response.data);
+      const responsedata = response.data;
+      for (let i = 0; i < responsedata.length; i++) {
+        responsedata[i].index = i + 1;
+      }
+      setData(responsedata);
     } catch (err) {
       console.log(err);
     }
@@ -72,8 +75,11 @@ const HealthFoodData = () => {
     const response = await axios.get(
       `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}`
     );
-    console.log(response.data);
-    setData(response.data);
+    const responsedata = response.data;
+    for (let i = 0; i < responsedata.length; i++) {
+      responsedata[i].index = i + 1;
+    }
+    setData(responsedata);
     try {
     } catch (err) {
       console.log(err);
@@ -97,8 +103,11 @@ const HealthFoodData = () => {
   const GetAllData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/item`);
-      setData(response.data);
-      console.log("alldata", response.data);
+      const responsedata = response.data;
+      for (let i = 0; i < responsedata.length; i++) {
+        responsedata[i].index = i + 1;
+      }
+      setData(responsedata);
     } catch (err) {
       console.log(err);
     }
@@ -106,7 +115,11 @@ const HealthFoodData = () => {
   const GetLimitData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/item/limit/10/1`);
-      setData(response.data);
+      const responsedata = response.data;
+      for (let i = 0; i < responsedata.length; i++) {
+        responsedata[i].index = i + 1;
+      }
+      setData(responsedata);
       console.log("limitdata", response.data);
     } catch (err) {
       console.log(err);
@@ -132,10 +145,10 @@ const HealthFoodData = () => {
       formatter: (cellContent: any, data: any, index: any) => (
         <React.Fragment>
           <Link
-            to={`HealthFoodDataRevise/${data._id}`}
+            to={`HealthFoodDataRevise/${data.id}`}
             className="text-body fw-medium"
           >
-            {index + 1}
+            {data.index}
           </Link>
         </React.Fragment>
       ),
