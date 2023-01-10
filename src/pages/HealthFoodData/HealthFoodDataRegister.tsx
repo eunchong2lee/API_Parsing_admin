@@ -498,7 +498,7 @@ const HealthFoodDataRegister = () => {
                         <div key={index}>
                           <Row>
                             <Col lg={2}>
-                              <div className="mb-3" key={index}>
+                              {/* <div className="mb-3" key={index}>
                                 <input
                                   key={index}
                                   type="text"
@@ -508,6 +508,11 @@ const HealthFoodDataRegister = () => {
                                   placeholder={item.standard || ""}
                                   onChange={standardChange.bind(null, index)}
                                 />
+                              </div> */}
+                              <div className="mb-3" key={index}>
+                                <Card className="form-control">
+                                  {item.standard}
+                                </Card>
                               </div>
                             </Col>
                             <Col lg={3}>
