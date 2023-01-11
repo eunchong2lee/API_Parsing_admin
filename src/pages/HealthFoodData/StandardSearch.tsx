@@ -18,6 +18,9 @@ import {
   CardFooter,
   ListGroup,
   ListGroupItem,
+  Pagination,
+  PaginationLink,
+  PaginationItem,
 } from "reactstrap";
 import axios from "axios";
 
@@ -43,9 +46,58 @@ const StandardSearch = (props: any) => {
     SetSearchModal(!SearchModal);
   };
 
+  // pageOptions
+  const [page, setPage] = useState<number>(1);
+  const [pageCount, setPageCount] = useState<number[]>([]);
+  const [endPage, setEndPage] = useState<number>(0);
+
+  const handlePageChange = (value: string) => {
+    // const { name } = e.target;
+    console.log(value);
+    if (value === "first") {
+      setPage(1);
+      setPageList(1);
+    } else if (value === "previous") {
+      setPage(page - 1);
+      setPageList(page - 1);
+    } else if (value === "next") {
+      setPage(page + 1);
+      setPageList(page + 1);
+    } else if (value === "last") {
+      setPage(endPage);
+      setPageList(endPage);
+    } else {
+      setPage(Number(value));
+      setPageList(Number(value));
+    }
+  };
+
+  const setPageList = (value: number) => {
+    if (endPage < 5) {
+      const new_pageCount = [];
+      for (let i = 1; i <= endPage; i++) {
+        new_pageCount.push(i);
+      }
+      setPageCount(new_pageCount);
+    } else if (endPage === 5) {
+      setPageCount([1, 2, 3, 4, 5]);
+    } else if (3 < value && value < endPage - 2) {
+      setPageCount([value - 2, value - 1, value, value + 1, value + 2]);
+    } else if (value >= endPage - 2) {
+      setPageCount([
+        endPage - 4,
+        endPage - 3,
+        endPage - 2,
+        endPage - 1,
+        endPage,
+      ]);
+    } else if (value <= 3) {
+      setPageCount([1, 2, 3, 4, 5]);
+    }
+  };
+
   // axios
   const GetStandard = async () => {
-    console.log("data", data);
     // 실제로 할 때
     // const response: any = await axios.get(
     //   `http://localhost:3000/item/standard?name=${data}`
@@ -57,7 +109,18 @@ const StandardSearch = (props: any) => {
 
     const responsedata = response.data;
     SetStandard(responsedata);
-    console.log("standard", Standard);
+    const pageCounts = [];
+    if (responsedata.length / 10 + 1 > 5) {
+      for (let i = 1; i <= 5; i++) {
+        pageCounts.push(i);
+      }
+    } else {
+      for (let i = 1; i <= responsedata.length / 10 + 1; i++) {
+        pageCounts.push(i);
+      }
+    }
+    setEndPage(Math.floor(responsedata.length / 10 + 1));
+    setPageCount(pageCounts);
   };
 
   /// 상위 컴포넌트로 전달
@@ -116,40 +179,106 @@ const StandardSearch = (props: any) => {
                 <>
                   <ListGroup>
                     {Search
-                      ? Standard.map((item, index) => (
-                          <ListGroupItem
-                            type="select"
-                            name={item}
-                            id={item}
-                            key={index}
-                            value={item}
-                            action
-                            onClick={() => {
-                              submitData(item);
-                              Searchtoggle();
-                            }}
-                          >
-                            {item}
-                          </ListGroupItem>
-                        ))
+                      ? Standard.map((item, index) => {
+                          if ((page - 1) * 10 <= index && index < page * 10) {
+                            return (
+                              <ListGroupItem
+                                type="select"
+                                name={item}
+                                id={item}
+                                key={index}
+                                value={item}
+                                action
+                                onClick={() => {
+                                  submitData(item);
+                                  Searchtoggle();
+                                }}
+                              >
+                                {item}
+                              </ListGroupItem>
+                            );
+                          }
+                        })
                       : null}
                   </ListGroup>
                 </>
               </Row>
             </CardBody>
             <CardFooter>
-              <div className="text-center">
-                <Button
-                  className="btn btn-sm btn-primary"
-                  type="submit"
-                  color="blue"
-                  onClick={() => {
-                    GetStandard();
-                    OnOffSearch();
-                  }}
-                >
-                  검색하기 <i className="mdi mdi-arrow-right align-middle"></i>
-                </Button>
+              <div>
+                <Row>
+                  <Col>
+                    <Button
+                      className="btn btn-sm btn-primary"
+                      type="submit"
+                      color="blue"
+                      onClick={() => {
+                        GetStandard();
+                        if (!Search) {
+                          OnOffSearch();
+                        }
+                      }}
+                    >
+                      검색하기{" "}
+                      <i className="mdi mdi-arrow-right align-middle"></i>
+                    </Button>
+                  </Col>
+                  <Col>
+                    {Standard.length ? (
+                      <Pagination>
+                        {page === 1 ? null : (
+                          <>
+                            {" "}
+                            <PaginationItem
+                              onClick={() => {
+                                handlePageChange("first");
+                              }}
+                            >
+                              <PaginationLink first />
+                            </PaginationItem>
+                            <PaginationItem
+                              onClick={() => {
+                                handlePageChange("previous");
+                              }}
+                            >
+                              <PaginationLink previous />
+                            </PaginationItem>
+                          </>
+                        )}
+
+                        {pageCount.map((item, index) => (
+                          <PaginationItem
+                            key={index}
+                            active={item === page ? true : false}
+                            onClick={() => {
+                              handlePageChange(item.toString());
+                            }}
+                          >
+                            <PaginationLink href="#">{item}</PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        {page === endPage ? null : (
+                          <>
+                            <PaginationItem
+                              onClick={() => {
+                                handlePageChange("next");
+                              }}
+                            >
+                              <PaginationLink href="#" next />
+                            </PaginationItem>
+                            <PaginationItem
+                              onClick={() => {
+                                handlePageChange("last");
+                              }}
+                            >
+                              <PaginationLink href="#" last />
+                            </PaginationItem>
+                          </>
+                        )}
+                      </Pagination>
+                    ) : null}
+                  </Col>
+                </Row>
               </div>
             </CardFooter>
           </Card>
@@ -164,7 +293,14 @@ const StandardSearch = (props: any) => {
           >
             등록
           </Button>{" "} */}
-          <Button color="secondary" onClick={Searchtoggle}>
+          <Button
+            color="secondary"
+            onClick={() => {
+              Searchtoggle();
+              setData("");
+              SetStandard([]);
+            }}
+          >
             취소
           </Button>
         </ModalFooter>
