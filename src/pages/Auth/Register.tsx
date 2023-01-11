@@ -47,8 +47,12 @@ const RegisterIndividual = () => {
 
   //// modal 창
   const [modalMessage, setModalMessage] = useState<string[]>(["", ""]);
-  const [isModal, setIsModal] = useState(false);
+  const [isModal, setIsModal] = useState<boolean>(false);
   const Istoggle = () => setIsModal(!isModal);
+
+  // Register Modal
+  const [registerModal, setRegisterModal] = useState<boolean>(false);
+  const IsRegisterToggle = () => setRegisterModal(!registerModal);
 
   //// onChange 함수
   const onChangeAccount = (e: { target: { value: any; name: any } }) => {
@@ -313,7 +317,7 @@ const RegisterIndividual = () => {
                         className="btn btn-info w-100"
                         type="submit"
                         onClick={() => {
-                          singUP();
+                          IsRegisterToggle();
                         }}
                       >
                         Register
@@ -339,6 +343,36 @@ const RegisterIndividual = () => {
                           >
                             확인
                           </Button>{" "}
+                        </ModalFooter>
+                      </Modal>
+                    ) : null}
+                    {registerModal ? (
+                      <Modal isOpen={registerModal} toggle={IsRegisterToggle}>
+                        {/* <Modal isOpen={modal} toggle={toggle} {...args}> */}
+                        <ModalHeader toggle={IsRegisterToggle}>
+                          회원가입
+                        </ModalHeader>
+                        <ModalBody>회원가입하겠습니까?</ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="primary"
+                            type="button"
+                            onClick={() => {
+                              IsRegisterToggle();
+                              singUP();
+                            }}
+                          >
+                            네
+                          </Button>{" "}
+                          <Button
+                            color="danger"
+                            type="button"
+                            onClick={() => {
+                              IsRegisterToggle();
+                            }}
+                          >
+                            아니오
+                          </Button>
                         </ModalFooter>
                       </Modal>
                     ) : null}

@@ -510,7 +510,10 @@ const HealthFoodDataRegister = () => {
                                 />
                               </div> */}
                               <div className="mb-3" key={index}>
-                                <Card className="form-control">
+                                <Card
+                                  placeholder="선택하세요"
+                                  className="form-control"
+                                >
                                   {item.standard}
                                 </Card>
                               </div>
