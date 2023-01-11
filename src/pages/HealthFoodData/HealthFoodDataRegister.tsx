@@ -70,7 +70,7 @@ const HealthFoodDataRegister = () => {
 
   //   const nextID = useRef<number>(1);
   const [inputItems, setInputItems] = useState<InputItem[]>([
-    { standard: "ex) 아연, 진세노사이드", quantity: "ex) 10mg, 20ug" },
+    { standard: "", quantity: "ex) 10mg, 20ug" },
   ]);
 
   // 추가
@@ -509,13 +509,17 @@ const HealthFoodDataRegister = () => {
                                   onChange={standardChange.bind(null, index)}
                                 />
                               </div> */}
+
                               <div className="mb-3" key={index}>
-                                <Card
-                                  placeholder="선택하세요"
-                                  className="form-control"
-                                >
-                                  {item.standard}
-                                </Card>
+                                {item.standard ? (
+                                  <Card className="form-control">
+                                    {item.standard}
+                                  </Card>
+                                ) : (
+                                  <Card className="form-control">
+                                    선택하세요
+                                  </Card>
+                                )}
                               </div>
                             </Col>
                             <Col lg={3}>
