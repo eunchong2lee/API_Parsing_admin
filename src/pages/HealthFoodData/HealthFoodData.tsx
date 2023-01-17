@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { Row, Col, Card, CardBody, CardHeader, Container } from "reactstrap";
+import {
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardHeader,
+  Container,
+  Button,
+} from "reactstrap";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
+import { saveAs } from "file-saver";
+import fileDownload from "js-file-download";
 
 // add component
 
@@ -149,6 +159,7 @@ const HealthFoodData = () => {
       console.log(err);
     }
   };
+
   const GetLimitData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/item/limit/10/1`);
@@ -158,6 +169,14 @@ const HealthFoodData = () => {
       }
       setData(responsedata);
       console.log("limitdata", response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const GetFile = async () => {
+    try {
+      window.open("http://localhost:3000/item/file", "_blank");
     } catch (err) {
       console.log(err);
     }
@@ -310,6 +329,20 @@ const HealthFoodData = () => {
                 </CardBody>
 
                 <CardBody>
+                  <Row>
+                    <Col xs={11}></Col>
+                    <Col>
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          GetFile();
+                        }}
+                      >
+                        file
+                      </Button>
+                    </Col>
+                  </Row>
+
                   <PaginationProvider
                     pagination={paginationFactory(pageOptions)}
                     // columns={columns}

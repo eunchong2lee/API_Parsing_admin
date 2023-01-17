@@ -3,7 +3,8 @@ import { Redirect } from "react-router-dom";
 //Sales
 import Sales from "../pages/Sales";
 //Analytics
-import Analytics from "../pages/Analytics";
+import index from "../pages/Analytics/index";
+
 //Calendar
 import Calendar from "../pages/Calendar";
 //Chat
@@ -171,6 +172,9 @@ import HealthFoodDataRevise from "src/pages/HealthFoodData/HealthFoodDataRevise"
 import LoginPage from "../pages/Auth/Login";
 import RegisterIndividual from "../pages/Auth/Register";
 
+// Analytics
+import Analytics from "../pages/Analytics/Analytics";
+
 interface RouteProps {
   path: string;
   component: any;
@@ -180,7 +184,7 @@ interface RouteProps {
 const userRoutes: Array<RouteProps> = [
   //dashboard
   { path: "/sales", component: Sales },
-  { path: "/dashboards-analytics", component: Analytics },
+  { path: "/dashboards-analytics", component: index },
   { path: "/calendar", component: Calendar },
   { path: "/chat", component: Chat },
   { path: "/kanban-board", component: KanbanBoard },
@@ -300,6 +304,9 @@ const userRoutes: Array<RouteProps> = [
   { path: "/HealthFoodDataRegister", component: HealthFoodDataRegister },
   { path: "/HealthFoodData/:id", component: HealthFoodDataDetail },
   { path: "/HealthFoodDataRevise/:id", component: HealthFoodDataRevise },
+
+  // analytics
+  { path: "/analytics", component: Analytics },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name

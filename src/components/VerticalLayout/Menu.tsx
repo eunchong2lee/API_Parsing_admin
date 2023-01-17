@@ -24,12 +24,12 @@ const menuItems: Array<MenuItemsProps> = [
   //   badge: "5+",
   //   badgecolor: "badge-soft-secondary",
   // },
-  // {
-  //   id: 139,
-  //   label: "Analytics",
-  //   icon: "pie-chart",
-  //   link: "/dashboards-analytics",
-  // },
+  {
+    id: 139,
+    label: "Analytics",
+    icon: "pie-chart",
+    link: "/dashboards-analytics",
+  },
   // {
   //   id: 3,
   //   label: "Applications",
@@ -930,21 +930,21 @@ const menuItems: Array<MenuItemsProps> = [
   //     },
   //   ],
   // },
-  {
-    id: 139,
-    novidade: false,
-    label: "건강기능식품",
-    icon: "database",
-    link: "/#",
-    subItems: [
-      {
-        id: 140,
-        label: "기본 목록",
-        link: "/drug-table",
-        parentId: 139,
-      },
-    ],
-  },
+  // {
+  //   id: 139,
+  //   novidade: false,
+  //   label: "건강기능식품",
+  //   icon: "database",
+  //   link: "/#",
+  //   subItems: [
+  //     {
+  //       id: 140,
+  //       label: "기본 목록",
+  //       link: "/drug-table",
+  //       parentId: 139,
+  //     },
+  //   ],
+  // },
   // {
   //   id: 141,
   //   novidade: false,
@@ -986,6 +986,12 @@ const menuItems: Array<MenuItemsProps> = [
         parentId: 141,
       },
     ],
+  },
+  {
+    id: 147,
+    label: "Analytics",
+    icon: "pie-chart",
+    link: "/analytics",
   },
 ];
 
