@@ -174,6 +174,7 @@ import RegisterIndividual from "../pages/Auth/Register";
 
 // Analytics
 import Analytics from "../pages/Analytics/Analytics";
+import HealthFoodFormEditors from "src/pages/HealthFoodData/editors";
 
 interface RouteProps {
   path: string;
@@ -307,6 +308,9 @@ const userRoutes: Array<RouteProps> = [
 
   // analytics
   { path: "/analytics", component: Analytics },
+
+  // formeidtors
+  { path: "/formEditors", component: HealthFoodFormEditors },
 
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
