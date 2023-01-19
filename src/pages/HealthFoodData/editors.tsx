@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
 import {
@@ -10,6 +10,8 @@ import {
   Container,
   CardHeader,
   Button,
+  Label,
+  Input,
 } from "reactstrap";
 import {
   ContentState,
@@ -31,11 +33,35 @@ const HealthFoodFormEditors = () => {
     EditorState.createEmpty()
   );
 
-  //   const onEditorStateChange = (
-  //     editorState: React.SetStateAction<EditorState>
-  //   ) => {
-  //     setContent(editorState);
-  //     console.log(content);
+  const [File, setFile] = useState<any>(null);
+
+  const formatBytes = (bytes: any, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  };
+
+  const onChangeFiles = (event: any) => {
+    console.log(event.currentTarget.files[0]);
+
+    setFile(event.currentTarget.files[0]);
+  };
+
+  //   const onChangeFiles = (e: ChangeEvent<HTMLInputElement> | any) => {
+  //     console.log(e);
+  //     let selectFiles: File[] = [];
+
+  //     if (e.type === "drop") {
+  //       selectFiles.push(e.dataTransfer.files);
+  //     } else {
+  //       selectFiles.push(e.target.files);
+  //     }
+  //     console.log(selectFiles);
+  //     setFile(selectFiles);
   //   };
 
   const postContent = async () => {
@@ -58,7 +84,7 @@ const HealthFoodFormEditors = () => {
 
   const getContent = async () => {
     console.log(1);
-    await axios.get(`http://localhost:3000/draft?id=2`).then(response => {
+    await axios.get(`http://localhost:3000/draft?id=3`).then(response => {
       const response_data = response.data;
       console.log(response_data);
       if (response_data.data.length) {
@@ -71,6 +97,28 @@ const HealthFoodFormEditors = () => {
       }
     });
   };
+
+  const postFile = async () => {
+    const formData = new FormData();
+    formData.append("file", File);
+    formData.append("data", "hello");
+
+    console.log(File);
+
+    await axios
+      .post(`http://localhost:3000/draft/file`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data, boundary=${form._boundary}",
+        },
+      })
+      .then(response => {
+        console.log("complete");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getContent();
     console.log(content);
@@ -112,6 +160,33 @@ const HealthFoodFormEditors = () => {
                   </Form>
                 </CardBody>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col xl={11}>
+              <div className="mb-3">
+                <Label htmlFor="formFile" className="form-label">
+                  사업자 등록증
+                </Label>
+                <Input
+                  className="form-control"
+                  type="file"
+                  id="formFile"
+                  onChange={onChangeFiles}
+                  //   errorMessage="파일을 업로드하세요"
+                />
+              </div>
+            </Col>
+            <Col xl={1}>
+              <Button
+                color="primary"
+                onClick={() => {
+                  postFile();
+                }}
+              >
+                {" "}
+                test
+              </Button>
             </Col>
           </Row>
           <Row>
