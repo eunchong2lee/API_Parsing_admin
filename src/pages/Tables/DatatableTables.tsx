@@ -422,7 +422,7 @@ const DatatableTables = () => {
                             <Row className="mb-2">
                               <Col md="4">
                                 <div className="search-box me-2 mb-2 d-inline-block">
-                                  <div className="position-relative">
+                                  <div className="position-relative ">
                                     <SearchBar {...toolkitProps.searchProps} />
                                     <i className="bx bx-search-alt search-icon" />
                                   </div>

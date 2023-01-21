@@ -25,6 +25,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { CardBody, Card } from "reactstrap";
 // component
 import StandardSearch from "./StandardSearch";
+import HealthFoodFormEditors from "./editors";
 
 const HealthFoodDataRevise = () => {
   const [data, setData] = useState<any>([]);

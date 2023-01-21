@@ -309,9 +309,6 @@ const userRoutes: Array<RouteProps> = [
   // analytics
   { path: "/analytics", component: Analytics },
 
-  // formeidtors
-  { path: "/formEditors", component: HealthFoodFormEditors },
-
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
   { path: "/", exact: true, component: () => <Redirect to="/drug-table" /> },

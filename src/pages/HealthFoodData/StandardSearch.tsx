@@ -34,7 +34,7 @@ const StandardSearch = (props: any) => {
   };
 
   // 성분 받아오기 get으로
-  const [Standard, SetStandard] = useState([]);
+  const [Standard, SetStandard] = useState<any[]>([]);
 
   // 검색 했을 때
   const [Search, SetSearch] = useState(false);
@@ -98,14 +98,10 @@ const StandardSearch = (props: any) => {
 
   // axios
   const GetStandard = async () => {
-    // 실제로 할 때
-    // const response: any = await axios.get(
-    //   `http://localhost:3000/item/standard?name=${data}`
-    // );
-    // 예시
     const response: any = await axios.get(
-      `http://localhost:3000/item/standard`
+      `http://localhost:3000/standard?name=${data}`
     );
+    console.log(response.data);
 
     const responsedata = response.data;
     SetStandard(responsedata);
@@ -184,17 +180,17 @@ const StandardSearch = (props: any) => {
                             return (
                               <ListGroupItem
                                 type="select"
-                                name={item}
-                                id={item}
+                                name={item.name}
+                                id={item.name}
                                 key={index}
-                                value={item}
+                                value={item.name}
                                 action
                                 onClick={() => {
-                                  submitData(item);
+                                  submitData(item.name);
                                   Searchtoggle();
                                 }}
                               >
-                                {item}
+                                {item.name}
                               </ListGroupItem>
                             );
                           }

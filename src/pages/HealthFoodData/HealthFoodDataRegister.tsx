@@ -28,6 +28,8 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 
 import { CardBody, Card } from "reactstrap";
 import StandardSearch from "./StandardSearch";
+import HealthFoodFormEditors from "./editors";
+import { EditorState } from "draft-js";
 
 // component
 
@@ -35,20 +37,18 @@ const HealthFoodDataRegister = () => {
   const [loading, setLoading] = useState(false);
 
   const setting = {
-    PRDUCT: "예시) 6년근고려홍삼황제정스틱",
-    STTEMNT_NO: "예시) 201600065981",
-    ENTRPS: "예시) 토음바이오 주식회사",
-    REGIST_DT: "예시) 20160704",
-    DISTB_PD: "예시) 제조일로부터 24개월",
-    SUNGSANG: "예시) 이미, 이취가 없고 고유의 향미가 있는 흑갈색의 액상",
-    SRV_USE: "예시) 1일 1회, 1회 1포(15ml)를 섭취하십시오. ",
-    PRSRV_PD: "예시) 직사광선을 피하고 서늘한 곳 보관",
-    INTAKE_HINT1: "예시) 의약품(당뇨치료제, 혈액항응고제) 복용 시 섭취에 주의",
-    MAIN_FNCTN:
-      "예시) ①면역력 증진에 도움을 줄 수 있음②피로개선에 도움을 줄 수 있음③혈소판 응집 억제를 통한 혈액흐름에 도움을 줄 수 있음④기억력 개선에 도움을 줄 수 있음⑤항산화에 도움을 줄 수 있음",
-    PRMS_IMG:
-      "예시) https://stagebodybuddy.blob.core.windows.net/crawl/HealthFoodData/6%EB%85%84%EA%B7%BC%EA%B3%A0%EB%A0%A4%ED%99%8D%EC%82%BC%ED%99%A9%EC%A0%9C%EC%A0%95%EC%8A%A4%ED%8B%B1",
-    PRMS_STANDARD: '예시) {"진세노사이드 Rg1, Rb1 및 Rg3의 합":"8.4mg"}',
+    PRDUCT: "",
+    STTEMNT_NO: "",
+    ENTRPS: "",
+    REGIST_DT: "",
+    DISTB_PD: "",
+    SUNGSANG: "",
+    SRV_USE: "",
+    PRSRV_PD: "",
+    INTAKE_HINT1: "",
+    MAIN_FNCTN: "",
+    PRMS_IMG: "",
+    PRMS_STANDARD: "",
   };
 
   // modal
@@ -56,11 +56,15 @@ const HealthFoodDataRegister = () => {
 
   const toggle = () => setRegistModal(!RegistModal);
 
-  //
-
   const [data, setData] = useState<any>(setting);
-  const [selectedMulti, setselectedMulti] = useState(null);
   const [selectedFiles, setselectedFiles] = useState<any>([]);
+
+  // editor content
+  const [content, setContent] = useState<EditorState>(() =>
+    EditorState.createEmpty()
+  );
+  // pdf file upload
+  const [File, setFile] = useState<any>();
 
   ////////////// 성분 //////////////////
   interface InputItem {
@@ -70,14 +74,14 @@ const HealthFoodDataRegister = () => {
 
   //   const nextID = useRef<number>(1);
   const [inputItems, setInputItems] = useState<InputItem[]>([
-    { standard: "", quantity: "ex) 10mg, 20ug" },
+    { standard: "", quantity: "" },
   ]);
 
   // 추가
   function addInput() {
     const input = {
-      standard: "ex) 아연, 진세노사이드",
-      quantity: "ex) 10mg, 20ug",
+      standard: "",
+      quantity: "",
     };
 
     setInputItems([...inputItems, input]); // 기존 값에 새로운 인풋객체를 추가해준다.
@@ -145,10 +149,6 @@ const HealthFoodDataRegister = () => {
       });
   };
 
-  function handleMulti(selectedMulti: any) {
-    setselectedMulti(selectedMulti);
-  }
-
   function handleAcceptedFiles(files: any) {
     files.map((file: any) =>
       Object.assign(file, {
@@ -169,16 +169,6 @@ const HealthFoodDataRegister = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
 
-  const optionGroup = [
-    { label: "Photoshop", value: "photoshop" },
-    { label: "illustrator", value: "illustrator" },
-    { label: "HTML", value: "HTML" },
-    { label: "CSS", value: "CSS" },
-    { label: "Javascript", value: "Javascript" },
-    { label: "Php", value: "Php" },
-    { label: "Python", value: "Python" },
-  ];
-
   ////////////////////////////////////////////////////////////////
   // data 값 변경
 
@@ -196,6 +186,23 @@ const HealthFoodDataRegister = () => {
   const HighSearch = async (low_data: any) => {
     try {
       searchstandardChange(low_data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const HighEditorData = async (low_data: any) => {
+    try {
+      console.log("low_data", low_data);
+      if (low_data.content) {
+        setContent(low_data.content);
+      }
+
+      if (low_data.file) {
+        setFile(low_data.file);
+      }
+
+      console.log(content, File);
     } catch (err) {
       console.log(err);
     }
@@ -240,7 +247,7 @@ const HealthFoodDataRegister = () => {
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                상품명(PRDUCT)
+                                상품명
                               </label>
                               <div>
                                 <AvField
@@ -248,23 +255,20 @@ const HealthFoodDataRegister = () => {
                                   type="text"
                                   className="form-control"
                                   id="PRDUCT"
-                                  placeholder="hello"
+                                  placeholder="예시) 6년근고려홍삼황제정스틱"
                                   errorMessage="Email invalid or already in use"
-                                  value={data.PRDUCT}
                                   onChange={onChange}
                                 />
                               </div>
                             </div>
                           </Col>
-                        </Row>
-                        <Row>
                           <Col lg={6}>
                             <div className="mb-3">
                               <label
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                모델명(STTEMNT_NO)
+                                모델명
                               </label>
                               <input
                                 name="STTEMNT_NO"
@@ -272,7 +276,7 @@ const HealthFoodDataRegister = () => {
                                 className="form-control"
                                 id="STTEMNT_NO"
                                 required
-                                placeholder={data.STTEMNT_NO}
+                                placeholder="예시) 201600065981"
                                 onChange={onChange}
                               />
                             </div>
@@ -285,7 +289,7 @@ const HealthFoodDataRegister = () => {
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                제조사명(ENTRPS)
+                                제조사명
                               </label>
                               <input
                                 name="ENTRPS"
@@ -293,7 +297,25 @@ const HealthFoodDataRegister = () => {
                                 className="form-control"
                                 id="ENTRPS"
                                 required
-                                placeholder={data.ENTRPS}
+                                placeholder="예시) 토음바이오 주식회사"
+                                onChange={onChange}
+                              />
+                            </div>
+                          </Col>
+                          <Col lg={6}>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="gen-info-name-input"
+                              >
+                                등록번호
+                              </label>
+                              <input
+                                name="REGIST_DT"
+                                type="text"
+                                className="form-control"
+                                id="REGIST_DT"
+                                placeholder="예시) 20160704"
                                 onChange={onChange}
                               />
                             </div>
@@ -307,114 +329,71 @@ const HealthFoodDataRegister = () => {
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                상품정보(MAIN_FNCTN)
-                              </label>
-                              <input
-                                name="MAIN_FNCTN"
-                                type="text"
-                                className="form-control"
-                                id="MAIN_FNCTN"
-                                placeholder={data.MAIN_FNCTN}
-                                onChange={onChange}
-                              />
-                            </div>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col lg={6}>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="gen-info-name-input"
-                              >
-                                등록번호(REGIST_DT)
-                              </label>
-                              <input
-                                name="REGIST_DT"
-                                type="text"
-                                className="form-control"
-                                id="REGIST_DT"
-                                placeholder={data.REGIST_DT}
-                                onChange={onChange}
-                              />
-                            </div>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col lg={6}>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="gen-info-name-input"
-                              >
-                                사용기간(DISTB_PD)
+                                사용기간
                               </label>
                               <input
                                 name="DISTB_PD"
                                 type="text"
                                 className="form-control"
                                 id="DISTB_PD"
-                                placeholder={data.DISTB_PD}
+                                placeholder="예시) 제조일로부터 24개월"
                                 onChange={onChange}
                               />
                             </div>
                           </Col>
-                        </Row>
-                        <Row>
-                          <Col lg>
+                          <Col lg={6}>
                             <div className="mb-3">
                               <label
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                성상(SUNGSANG)
-                              </label>
-                              <input
-                                name="SUNGSANG"
-                                type="text"
-                                className="form-control"
-                                id="SUNGSANG"
-                                placeholder={data.SUNGSANG}
-                                onChange={onChange}
-                              />
-                            </div>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col lg>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="gen-info-name-input"
-                              >
-                                권유 섭취량(SRV_USE)
+                                권유 섭취량
                               </label>
                               <input
                                 name="SUNGSANG"
                                 type="text"
                                 className="form-control"
                                 id="SRV_USE"
-                                placeholder={data.SRV_USE}
+                                placeholder="예시) 1일 1회, 1회 1포(15ml)를 섭취하십시오. "
                                 onChange={onChange}
                               />
                             </div>
                           </Col>
                         </Row>
+
                         <Row>
-                          <Col lg>
+                          <Col lg={6}>
                             <div className="mb-3">
                               <label
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                보관장소(PRSRV_PD)
+                                성상
+                              </label>
+                              <input
+                                name="SUNGSANG"
+                                type="text"
+                                className="form-control"
+                                id="SUNGSANG"
+                                placeholder="예시) 이미, 이취가 없고 고유의 향미가 있는 흑갈색의 액상"
+                                onChange={onChange}
+                              />
+                            </div>
+                          </Col>
+                          <Col lg={6}>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="gen-info-name-input"
+                              >
+                                보관장소
                               </label>
                               <input
                                 name="SUNGSANG"
                                 type="text"
                                 className="form-control"
                                 id="PRSRV_PD"
-                                placeholder={data.PRSRV_PD}
+                                placeholder="예시) 직사광선을 피하고 서늘한 곳 보관"
                                 onChange={onChange}
                               />
                             </div>
@@ -427,14 +406,34 @@ const HealthFoodDataRegister = () => {
                                 className="form-label"
                                 htmlFor="gen-info-name-input"
                               >
-                                주의사항(INTAKE_HINT1)
+                                주의사항
                               </label>
                               <input
                                 name="INTAKE_HINT1"
                                 type="text"
                                 className="form-control"
                                 id="INTAKE_HINT1"
-                                placeholder={data.INTAKE_HINT1}
+                                placeholder="예시) 의약품(당뇨치료제, 혈액항응고제) 복용 시 섭취에 주의"
+                                onChange={onChange}
+                              />
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col lg>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="gen-info-name-input"
+                              >
+                                상품정보
+                              </label>
+                              <input
+                                name="MAIN_FNCTN"
+                                type="text"
+                                className="form-control"
+                                id="MAIN_FNCTN"
+                                placeholder="예시) ①면역력 증진에 도움을 줄 수 있음②피로개선에 도움을 줄 수 있음③혈소판 응집 억제를 통한 혈액흐름에 도움을 줄 수 있음④기억력 개선에 도움을 줄 수 있음⑤항산화에 도움을 줄 수 있음"
                                 onChange={onChange}
                               />
                             </div>
@@ -512,13 +511,11 @@ const HealthFoodDataRegister = () => {
 
                               <div className="mb-3" key={index}>
                                 {item.standard ? (
-                                  <Card className="form-control">
+                                  <div className="form-control">
                                     {item.standard}
-                                  </Card>
+                                  </div>
                                 ) : (
-                                  <Card className="form-control">
-                                    선택하세요
-                                  </Card>
+                                  <div className="form-control">선택하세요</div>
                                 )}
                               </div>
                             </Col>
@@ -530,7 +527,7 @@ const HealthFoodDataRegister = () => {
                                   name="quantity"
                                   className="form-control"
                                   id="workexperience-designation-input"
-                                  placeholder={item.quantity || ""}
+                                  placeholder={"ex) 10mg, 20ug"}
                                   onChange={standardChange.bind(null, index)}
                                 />
                               </div>
@@ -621,6 +618,15 @@ const HealthFoodDataRegister = () => {
                         })}
                       </div>
                     </CardBody>
+                  </div>
+
+                  <div>
+                    <HealthFoodFormEditors
+                      toggleOnOff={1}
+                      content={content}
+                      file={File}
+                      propFunction={HighEditorData}
+                    ></HealthFoodFormEditors>
                   </div>
 
                   <div className="submit-button-item text-end">
