@@ -29,7 +29,6 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import axios from "axios";
 
 const HealthFoodFormEditors = (props: any) => {
-  const [toggle, setToggle] = useState(0);
   const [loading, setLoading] = useState(0);
 
   const onChangeFiles = (event: any) => {
@@ -97,7 +96,6 @@ const HealthFoodFormEditors = (props: any) => {
   // };
 
   useEffect(() => {
-    setToggle(props.toggleOnOff);
     setData();
     setLoading(1);
     console.log("toggle", props.toggleOnOff);
@@ -109,7 +107,7 @@ const HealthFoodFormEditors = (props: any) => {
 
   return (
     <>
-      {toggle ? (
+      {props.toggleOnOff ? (
         <>
           <div className="card border shadow-none">
             <div className="card-header d-flex align-items-center">

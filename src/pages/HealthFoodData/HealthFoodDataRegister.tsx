@@ -482,7 +482,7 @@ const HealthFoodDataRegister = () => {
                     </div>
                     <CardBody>
                       <Row>
-                        <Col lg={2}>
+                        <Col lg={3}>
                           <label htmlFor="workexperience-designation-input">
                             성분명
                           </label>
@@ -496,19 +496,7 @@ const HealthFoodDataRegister = () => {
                       {inputItems.map((item, index) => (
                         <div key={index}>
                           <Row>
-                            <Col lg={2}>
-                              {/* <div className="mb-3" key={index}>
-                                <input
-                                  key={index}
-                                  type="text"
-                                  name="standard"
-                                  className="form-control"
-                                  id="workexperience-designation-input"
-                                  placeholder={item.standard || ""}
-                                  onChange={standardChange.bind(null, index)}
-                                />
-                              </div> */}
-
+                            <Col lg={3}>
                               <div className="mb-3" key={index}>
                                 {item.standard ? (
                                   <div className="form-control">

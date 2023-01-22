@@ -26,6 +26,7 @@ import { CardBody, Card } from "reactstrap";
 // component
 import StandardSearch from "./StandardSearch";
 import HealthFoodFormEditors from "./editors";
+import { EditorState } from "draft-js";
 
 const HealthFoodDataRevise = () => {
   const [data, setData] = useState<any>([]);
@@ -50,6 +51,50 @@ const HealthFoodDataRevise = () => {
   //   const nextID = useRef<number>(1);
   const [inputItems, setInputItems] = useState<InputItem[]>([]);
   const [inputcopyItems, setInputcopyItems] = useState<InputItem[]>([]);
+
+  // editor content
+  const [content, setContent] = useState<EditorState>(() =>
+    EditorState.createEmpty()
+  );
+  // pdf file upload
+  const [File, setFile] = useState<any>();
+
+  // low component data
+  const HighEditorData = async (low_data: any) => {
+    try {
+      console.log("low_data", low_data);
+      if (low_data.content) {
+        setContent(low_data.content);
+      }
+
+      if (low_data.file) {
+        setFile(low_data.file);
+      }
+
+      console.log(content, File);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // searchstandard
+  const searchstandardChange = (data: any) => {
+    const low_data = data.low_data;
+    const index = data.index;
+
+    const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
+    new_inputItems[index]["standard"] = low_data;
+    setInputItems(new_inputItems);
+  };
+
+  // low component data
+  const HighSearch = async (low_data: any) => {
+    try {
+      searchstandardChange(low_data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Base Data
   const GetOneData = async () => {
@@ -274,7 +319,7 @@ const HealthFoodDataRevise = () => {
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              상품명(PRDUCT)
+                              상품명
                             </label>
                             {toggle ? (
                               <input
@@ -292,15 +337,13 @@ const HealthFoodDataRevise = () => {
                             )}
                           </div>
                         </Col>
-                      </Row>
-                      <Row>
                         <Col lg={6}>
                           <div className="mb-3">
                             <label
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              모델명(STTEMNT_NO)
+                              모델명
                             </label>
                             {toggle ? (
                               <input
@@ -326,7 +369,7 @@ const HealthFoodDataRevise = () => {
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              제조사명(ENTRPS)
+                              제조사명
                             </label>
                             {toggle ? (
                               <input
@@ -344,42 +387,13 @@ const HealthFoodDataRevise = () => {
                             )}
                           </div>
                         </Col>
-                      </Row>
-
-                      <Row>
                         <Col lg={6}>
                           <div className="mb-3">
                             <label
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              상품정보(MAIN_FNCTN)
-                            </label>
-                            {toggle ? (
-                              <input
-                                name="MAIN_FNCTN"
-                                type="text"
-                                className="form-control"
-                                id="MAIN_FNCTN"
-                                value={copydata.MAIN_FNCTN}
-                                onChange={onChange}
-                              />
-                            ) : (
-                              <Card className="form-control">
-                                {data.MAIN_FNCTN}
-                              </Card>
-                            )}
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg={6}>
-                          <div className="mb-3">
-                            <label
-                              className="form-label"
-                              htmlFor="gen-info-name-input"
-                            >
-                              등록번호(REGIST_DT)
+                              등록번호
                             </label>
                             {toggle ? (
                               <input
@@ -405,7 +419,7 @@ const HealthFoodDataRevise = () => {
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              사용기간(DISTB_PD)
+                              사용기간
                             </label>
                             {toggle ? (
                               <input
@@ -423,41 +437,13 @@ const HealthFoodDataRevise = () => {
                             )}
                           </div>
                         </Col>
-                      </Row>
-                      <Row>
-                        <Col lg>
+                        <Col lg={6}>
                           <div className="mb-3">
                             <label
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              성상(SUNGSANG)
-                            </label>
-                            {toggle ? (
-                              <input
-                                name="SUNGSANG"
-                                type="text"
-                                className="form-control"
-                                id="SUNGSANG"
-                                value={copydata.SUNGSANG}
-                                onChange={onChange}
-                              />
-                            ) : (
-                              <Card className="form-control">
-                                {data.SUNGSANG}
-                              </Card>
-                            )}
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg>
-                          <div className="mb-3">
-                            <label
-                              className="form-label"
-                              htmlFor="gen-info-name-input"
-                            >
-                              권유 섭취량(SRV_USE)
+                              권유 섭취량
                             </label>
                             {toggle ? (
                               <input
@@ -477,13 +463,37 @@ const HealthFoodDataRevise = () => {
                         </Col>
                       </Row>
                       <Row>
-                        <Col lg>
+                        <Col lg={6}>
                           <div className="mb-3">
                             <label
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              보관장소(PRSRV_PD)
+                              성상
+                            </label>
+                            {toggle ? (
+                              <input
+                                name="SUNGSANG"
+                                type="text"
+                                className="form-control"
+                                id="SUNGSANG"
+                                value={copydata.SUNGSANG}
+                                onChange={onChange}
+                              />
+                            ) : (
+                              <Card className="form-control">
+                                {data.SUNGSANG}
+                              </Card>
+                            )}
+                          </div>
+                        </Col>
+                        <Col lg={6}>
+                          <div className="mb-3">
+                            <label
+                              className="form-label"
+                              htmlFor="gen-info-name-input"
+                            >
+                              보관장소
                             </label>
                             {toggle ? (
                               <input
@@ -502,6 +512,7 @@ const HealthFoodDataRevise = () => {
                           </div>
                         </Col>
                       </Row>
+
                       <Row>
                         <Col lg>
                           <div className="mb-3">
@@ -509,7 +520,7 @@ const HealthFoodDataRevise = () => {
                               className="form-label"
                               htmlFor="gen-info-name-input"
                             >
-                              주의사항(INTAKE_HINT1)
+                              주의사항
                             </label>
                             {toggle ? (
                               <input
@@ -523,6 +534,32 @@ const HealthFoodDataRevise = () => {
                             ) : (
                               <Card className="form-control">
                                 {data.INTAKE_HINT1}
+                              </Card>
+                            )}
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col lg>
+                          <div className="mb-3">
+                            <label
+                              className="form-label"
+                              htmlFor="gen-info-name-input"
+                            >
+                              상품정보
+                            </label>
+                            {toggle ? (
+                              <input
+                                name="MAIN_FNCTN"
+                                type="text"
+                                className="form-control"
+                                id="MAIN_FNCTN"
+                                value={copydata.MAIN_FNCTN}
+                                onChange={onChange}
+                              />
+                            ) : (
+                              <Card className="form-control">
+                                {data.MAIN_FNCTN}
                               </Card>
                             )}
                           </div>
@@ -588,14 +625,9 @@ const HealthFoodDataRevise = () => {
                             <Row>
                               <Col lg={3}>
                                 <div className="mb-3">
-                                  <input
-                                    name="standard"
-                                    type="text"
-                                    className="form-control"
-                                    id="standard"
-                                    value={inputItems[index].standard}
-                                    onChange={standardChange.bind(null, index)}
-                                  />
+                                  <div className="form-control" id="standard">
+                                    {inputItems[index].standard}
+                                  </div>
                                 </div>
                               </Col>
                               <Col lg={3}>
@@ -609,6 +641,13 @@ const HealthFoodDataRevise = () => {
                                     onChange={standardChange.bind(null, index)}
                                   />
                                 </div>
+                              </Col>
+                              <Col lg={3}>
+                                <StandardSearch
+                                  index={index}
+                                  value={HighSearch}
+                                  propFunction={HighSearch}
+                                ></StandardSearch>
                               </Col>
                             </Row>
                           </div>
@@ -784,6 +823,15 @@ const HealthFoodDataRevise = () => {
                       </div>
                     </Form>
                   </CardBody>
+                </div>
+
+                <div>
+                  <HealthFoodFormEditors
+                    toggleOnOff={toggle}
+                    content={content}
+                    file={File}
+                    propFunction={HighEditorData}
+                  ></HealthFoodFormEditors>
                 </div>
 
                 {toggle ? (
