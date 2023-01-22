@@ -15,13 +15,17 @@ import {
 import UserChart from "../AllCharts/apex/UserChart";
 import HealthFoodChart from "./HealthFoodChart";
 
-const HealthFood = () => {
+const HealthFood = (props: any) => {
   const [menu1, setMenu1] = useState<boolean>(false);
   const [menu, setMenu] = useState<string>("연도별");
 
   const MenuClick = (value: React.SetStateAction<string>) => {
     setMenu(value);
   };
+
+  if (!props.data) {
+    return null;
+  }
 
   return (
     <React.Fragment>
@@ -34,7 +38,7 @@ const HealthFood = () => {
             <div className="flex-shrink-0">
               <Dropdown isOpen={menu1} toggle={() => setMenu1(!menu1)}>
                 <DropdownToggle tag="a" className="text-reset">
-                  <span className="fw-semibold">Sort By:</span>{" "}
+                  <span className="fw-semibold">정렬:</span>{" "}
                   <span className="text-muted">
                     {menu}
                     <i className="mdi mdi-chevron-down ms-1"></i>
@@ -55,13 +59,7 @@ const HealthFood = () => {
                   >
                     <DropdownItem>월별</DropdownItem>
                   </div>
-                  <div
-                    onClick={() => {
-                      MenuClick("주별");
-                    }}
-                  >
-                    <DropdownItem>주별</DropdownItem>
-                  </div>
+
                   <div
                     onClick={() => {
                       MenuClick("요일별");
@@ -79,39 +77,17 @@ const HealthFood = () => {
             <div className="col-md-auto">
               <div>
                 <p className="text-muted mb-2">총 등록 건강식품</p>
-                <h4 className="mb-0">
-                  18.2 k{" "}
-                  <span className="text-muted font-size-12 fw-normal ms-2">
-                    1.4 %{" "}
-                    <i className="uil uil-arrow-up-right text-success ms-1"></i>
-                  </span>
-                </h4>
+                <h4 className="mb-0">{props.data.total}</h4>
               </div>
             </div>
             <div className="col-md align-self-end">
               <div className="text-md-end mt-4 mt-md-0">
                 <ul className="list-inline main-chart mb-0">
-                  <li className="list-inline-item chart-border-left me-0 border-0">
-                    <h4 className="text-primary my-1">
-                      3.85 k
-                      <span className="text-muted d-inline-block fw-normal font-size-13 ms-2">
-                        Sessions
-                      </span>
-                    </h4>
-                  </li>{" "}
                   <li className="list-inline-item chart-border-left me-0">
                     <h4 className="my-1">
-                      24.03 %
+                      {props.data.user}
                       <span className="text-muted d-inline-block fw-normal font-size-13 ms-2">
-                        Bounce Rate
-                      </span>
-                    </h4>
-                  </li>{" "}
-                  <li className="list-inline-item chart-border-left me-0">
-                    <h4 className="my-1">
-                      52 k
-                      <span className="text-muted d-inline-block fw-normal font-size-13 ms-2">
-                        Users
+                        유저 수
                       </span>
                     </h4>
                   </li>{" "}
@@ -122,7 +98,7 @@ const HealthFood = () => {
         </CardBody>
         <div>
           <div id="chart-area" className="apex-charts" dir="ltr">
-            <HealthFoodChart date={menu} />
+            <HealthFoodChart data={props.data} date={menu} />
           </div>
         </div>
       </Card>

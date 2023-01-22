@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
 
 //import Breadcrumbs
@@ -9,8 +9,25 @@ import { Col, Container, Row } from "reactstrap";
 import UserActivity from "./UserActivity";
 import HealthFood from "./HealthFood";
 import Summary from "./summary";
+import axios from "axios";
 
 const Analytics = () => {
+  const [data, setData] = useState<any>();
+
+  const getAnalytics = async () => {
+    const response = await axios.get(`http://localhost:3000/analytics`);
+    const response_data = response.data;
+    setData(response_data);
+  };
+
+  useEffect(() => {
+    getAnalytics();
+  }, []);
+
+  if (!data) {
+    return null;
+  }
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -24,10 +41,10 @@ const Analytics = () => {
 
           <Row>
             <Col className="col-xxl-9" lg={8}>
-              <HealthFood />
+              <HealthFood data={data} />
             </Col>
             <Col className="col-xxl-3" lg={4}>
-              <Summary />
+              <Summary data={data} />
               <UserActivity />
             </Col>
           </Row>
