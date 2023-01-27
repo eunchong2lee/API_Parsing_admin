@@ -961,12 +961,12 @@ const menuItems: Array<MenuItemsProps> = [
   //     },
   //   ],
   // },
-  {
-    id: 139,
-    label: "Analytics",
-    icon: "pie-chart",
-    link: "/dashboards-analytics",
-  },
+  // {
+  //   id: 139,
+  //   label: "Analytics",
+  //   icon: "pie-chart",
+  //   link: "/dashboards-analytics",
+  // },
   {
     id: 144,
     novidade: false,
@@ -990,7 +990,7 @@ const menuItems: Array<MenuItemsProps> = [
   },
   {
     id: 147,
-    label: "Analytics",
+    label: "통계",
     icon: "pie-chart",
     link: "/analytics",
   },

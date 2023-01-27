@@ -33,7 +33,7 @@ const HealthFood = (props: any) => {
         <CardHeader className="bg-transparent">
           <div className="d-flex align-items-start">
             <div className="flex-grow-1">
-              <h5 className="card-title mb-0">Daily Active Users</h5>
+              <h5 className="card-title mb-0">건강식품 정보 통계</h5>
             </div>
             <div className="flex-shrink-0">
               <Dropdown isOpen={menu1} toggle={() => setMenu1(!menu1)}>

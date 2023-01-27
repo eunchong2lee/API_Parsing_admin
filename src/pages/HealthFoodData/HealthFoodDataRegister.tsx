@@ -64,7 +64,7 @@ const HealthFoodDataRegister = () => {
     EditorState.createEmpty()
   );
   // pdf file upload
-  const [File, setFile] = useState<any>();
+  const [File, setFile] = useState<any[]>([]);
 
   ////////////// 성분 //////////////////
   interface InputItem {
@@ -183,7 +183,7 @@ const HealthFoodDataRegister = () => {
   };
 
   // low component data
-  const HighSearch = async (low_data: any) => {
+  const HighSearch = (low_data: any) => {
     try {
       searchstandardChange(low_data);
     } catch (err) {
@@ -191,7 +191,7 @@ const HealthFoodDataRegister = () => {
     }
   };
 
-  const HighEditorData = async (low_data: any) => {
+  const HighEditorData = (low_data: any) => {
     try {
       console.log("low_data", low_data);
       if (low_data.content) {
@@ -199,13 +199,21 @@ const HealthFoodDataRegister = () => {
       }
 
       if (low_data.file) {
-        setFile(low_data.file);
+        setFile([...File, low_data.file]);
       }
 
       console.log(content, File);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const HighDeleteFile = (index: number) => {
+    const newFile = File.filter((file, i) => {
+      return i != index;
+    });
+
+    setFile(newFile);
   };
 
   return (
@@ -614,6 +622,7 @@ const HealthFoodDataRegister = () => {
                       content={content}
                       file={File}
                       propFunction={HighEditorData}
+                      propDeleteFunction={HighDeleteFile}
                     ></HealthFoodFormEditors>
                   </div>
 

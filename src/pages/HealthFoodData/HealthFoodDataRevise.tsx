@@ -57,7 +57,7 @@ const HealthFoodDataRevise = () => {
     EditorState.createEmpty()
   );
   // pdf file upload
-  const [File, setFile] = useState<any>();
+  const [File, setFile] = useState<any[]>([]);
 
   // low component data
   const HighEditorData = async (low_data: any) => {
@@ -68,7 +68,7 @@ const HealthFoodDataRevise = () => {
       }
 
       if (low_data.file) {
-        setFile(low_data.file);
+        setFile([low_data.file]);
       }
 
       console.log(content, File);

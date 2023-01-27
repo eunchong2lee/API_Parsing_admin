@@ -41,6 +41,12 @@ const HealthFoodFormEditors = (props: any) => {
     props.propFunction(e);
   };
 
+  const deleteFile = (index: number) => {
+    props.propDeleteFunction(index);
+  };
+
+  const fileOnclick = () => {};
+
   const setData = () => {};
 
   // const postContent = async () => {
@@ -161,6 +167,32 @@ const HealthFoodFormEditors = (props: any) => {
                   </div>
                 </Col>
               </Row>
+              <Row>
+                {props.file.length
+                  ? props.file.map((file: any, index: number) => {
+                      return (
+                        <div key={index}>
+                          <Row>
+                            <Col xl={4}>
+                              <div className="form-control"> {file.name}</div>
+                            </Col>
+                            <Col xl={1}>
+                              <Button
+                                color="danger"
+                                onClick={() => {
+                                  deleteFile(index);
+                                }}
+                              >
+                                {"x"}
+                              </Button>
+                            </Col>
+                            <div>&nbsp;</div>
+                          </Row>
+                        </div>
+                      );
+                    })
+                  : null}
+              </Row>
             </CardBody>
           </div>
         </>
@@ -207,14 +239,28 @@ const HealthFoodFormEditors = (props: any) => {
               <Row>
                 <Col xl={6}>
                   <div className="mb-3">
-                    <Input
-                      className="form-control"
-                      type="file"
-                      id="formFile"
-                      onChange={onChangeFiles}
-                    />
+                    <Card className="form-control" id="formFile">
+                      {"파일을 추가하거나 삭제하고 싶으면 수정버튼을 누르세요"}
+                    </Card>
                   </div>
                 </Col>
+              </Row>
+              <Row>
+                {props.file.length
+                  ? props.file.map((file: any, index: number) => {
+                      return (
+                        <div key={index}>
+                          <Row>
+                            <Col xl={4}>
+                              <div className="form-control"> {file.name}</div>
+                              <script async src={file.File}></script>
+                            </Col>
+                            <div>&nbsp;</div>
+                          </Row>
+                        </div>
+                      );
+                    })
+                  : null}
               </Row>
             </CardBody>
           </div>
