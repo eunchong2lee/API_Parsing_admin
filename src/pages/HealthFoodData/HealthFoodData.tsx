@@ -69,7 +69,8 @@ const HealthFoodData = () => {
     return isNotMobile ? children : null;
   };
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
+  const [pageState, goToPage] = useState<number>(1);
 
   // useEffect memory
   const [loading, setLoading] = useState(false);
@@ -168,7 +169,6 @@ const HealthFoodData = () => {
         responsedata[i].index = i + 1;
       }
       setData(responsedata);
-      console.log("limitdata", response.data);
     } catch (err) {
       console.log(err);
     }
@@ -186,22 +186,20 @@ const HealthFoodData = () => {
     setLoading(true);
 
     GetLimitData();
-    GetAllData();
+    // GetAllData();
 
-    return () => {
-      setLoading(false);
-    };
+    setLoading(false);
   }, []);
 
   const columns = [
     {
       text: "id",
-      dataField: "id",
+      dataField: "_id",
       sort: true,
       formatter: (cellContent: any, data: any, index: any) => (
         <React.Fragment>
           <Link
-            to={`HealthFoodDataRevise/${data.id}`}
+            to={`HealthFoodDataRevise/${data._id}`}
             className="text-body fw-medium"
           >
             {data.index}
@@ -278,15 +276,61 @@ const HealthFoodData = () => {
     },
   ];
 
+  const pageChange = async (page: number) => {
+    try {
+      setLoading(true);
+      console.log(page);
+      const response = await axios
+        .get(`http://localhost:3000/item/limit/10/${page}`)
+        .then(response => {
+          const responseData = response.data;
+
+          const copydatas = [];
+
+          if (responseData.length && responseData[0]._id != 1) {
+            for (let i = 1; i < responseData[0]._id; i++) {
+              copydatas.push({ _id: i, index: i });
+            }
+
+            for (let i = 0; i < responseData.length; i++) {
+              responseData[i].index = (page - 1) * 10 + i + 1;
+              copydatas.push(responseData[i]);
+            }
+            setData(copydatas);
+            goToPage(page);
+            setLoading(false);
+          } else {
+            for (let i = 0; i < responseData.length; i++) {
+              responseData[i].index = (page - 1) * 10 + i + 1;
+              copydatas.push(responseData[i]);
+            }
+            setData(copydatas);
+            goToPage(page);
+            setLoading(false);
+          }
+
+          // setData()
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const pageOptions: any = {
     sizePerPage: 10,
-    totalSize: data.length, // replace later with size(customers),
+    totalSize: 300000, // replace later with size(customers),
     custom: true,
+    page: pageState,
+    onPageChange: pageChange,
   };
 
   const { SearchBar } = Search;
 
-  if (!data) {
+  if (loading) {
+    return null;
+  }
+
+  if (!data.length) {
     return null;
   }
 
