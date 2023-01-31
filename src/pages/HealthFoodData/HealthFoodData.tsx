@@ -71,6 +71,7 @@ const HealthFoodData = () => {
 
   const [data, setData] = useState<any>([]);
   const [pageState, goToPage] = useState<number>(1);
+  const [count, setCount] = useState<number>(0);
 
   // useEffect memory
   const [loading, setLoading] = useState(false);
@@ -164,10 +165,12 @@ const HealthFoodData = () => {
   const GetLimitData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/item/limit/10/1`);
-      const responsedata = response.data;
+      const responsedata = response.data.data;
+      const responseLength = response.data.dataLength;
       for (let i = 0; i < responsedata.length; i++) {
         responsedata[i].index = i + 1;
       }
+      setCount(responseLength);
       setData(responsedata);
     } catch (err) {
       console.log(err);
@@ -283,7 +286,7 @@ const HealthFoodData = () => {
       const response = await axios
         .get(`http://localhost:3000/item/limit/10/${page}`)
         .then(response => {
-          const responseData = response.data;
+          const responseData = response.data.data;
 
           const copydatas = [];
 
@@ -306,6 +309,7 @@ const HealthFoodData = () => {
             }
             setData(copydatas);
             goToPage(page);
+
             setLoading(false);
           }
 
@@ -318,7 +322,7 @@ const HealthFoodData = () => {
 
   const pageOptions: any = {
     sizePerPage: 10,
-    totalSize: 300000, // replace later with size(customers),
+    totalSize: count, // replace later with size(customers),
     custom: true,
     page: pageState,
     onPageChange: pageChange,
