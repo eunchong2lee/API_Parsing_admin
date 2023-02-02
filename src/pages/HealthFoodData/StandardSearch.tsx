@@ -52,8 +52,6 @@ const StandardSearch = (props: any) => {
   const [endPage, setEndPage] = useState<number>(0);
 
   const handlePageChange = (value: string) => {
-    // const { name } = e.target;
-    console.log(value);
     if (value === "first") {
       setPage(1);
       setPageList(1);

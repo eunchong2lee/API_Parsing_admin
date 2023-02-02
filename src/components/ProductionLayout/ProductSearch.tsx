@@ -16,54 +16,16 @@ import "./_healthItem.scss";
 import { indexOf } from "lodash";
 
 const ProductSearchForm = (props: any) => {
-  const [data, setData] = useState({
-    tab: "제품명",
-    name: "",
-    useYN: "E",
-    date: "",
-  });
-
-  const SetDate = () => {
-    const curr = new Date();
-
-    // UTC 시간 계산
-    const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
-
-    // 3. UTC to KST (UTC + 9시간)
-    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
-    const kr_curr = new Date(utc + KR_TIME_DIFF);
-    const year = kr_curr.getFullYear();
-
-    const month = kr_curr.getMonth() + 1;
-    let current_month: string = `${month}`;
-    if (month < 10) {
-      current_month = `0` + month;
-    }
-    const date = kr_curr.getDate();
-    let current_date: string = `${date}`;
-    if (date < 10) {
-      current_date = `0` + date;
-    }
-
-    const str = year + "-" + current_month + "-" + current_date;
-
-    return { firstDate: str, secondDate: str };
-  };
-
-  const [date, setDate] = useState(SetDate());
   const [toggle, setToggle] = useState(1);
 
   const onclick = () => {
     if (toggle == 0) {
-      data.date = `${date.firstDate}~${date.secondDate}`;
+      props.data.date = `${props.date.firstDate}~${props.date.secondDate}`;
     } else {
-      data.date = "";
+      props.data.date = "";
     }
-    submitText(data);
-  };
-
-  const submitText = (low_data: any) => {
-    props.propFunction(low_data);
+    props.propFunction(props.data);
+    props.setSearch();
   };
 
   const onChangeToggle = (e: { target: { value: string } }) => {
@@ -74,18 +36,14 @@ const ProductSearchForm = (props: any) => {
 
   const onChangeSelection = (e: { target: { value: string; name: any } }) => {
     const { value, name } = e.target;
-    setData({
-      ...data,
-      [name]: value,
-    });
+
+    props.setData(value, name);
   };
 
   const onChangeDate = (e: { target: { value: string; name: any } }) => {
     const { value, name } = e.target;
-    setDate({
-      ...date,
-      [name]: value,
-    });
+
+    props.ChangeDate(value, name);
   };
   return (
     <React.Fragment>
@@ -123,7 +81,7 @@ const ProductSearchForm = (props: any) => {
                       <Input
                         className="form-control input-box"
                         type="text"
-                        value={data.name}
+                        value={props.data.name}
                         name="name"
                         id="name"
                         onChange={onChangeSelection}
@@ -236,7 +194,7 @@ const ProductSearchForm = (props: any) => {
                                     type="date"
                                     id="firstDate"
                                     name="firstDate"
-                                    value={date.firstDate}
+                                    value={props.date.firstDate}
                                     onChange={onChangeDate}
                                   />
                                 </Col>
@@ -253,7 +211,7 @@ const ProductSearchForm = (props: any) => {
                                     type="date"
                                     id="secondDate"
                                     name="secondDate"
-                                    value={date.secondDate}
+                                    value={props.date.secondDate}
                                     onChange={onChangeDate}
                                   />
                                 </Col>

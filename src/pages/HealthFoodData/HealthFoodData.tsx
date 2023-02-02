@@ -29,6 +29,7 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
 import ProductSearchForm from "src/components/ProductionLayout/ProductSearch";
 import { useMediaQuery } from "react-responsive";
+import Pagination from "@mui/material/Pagination";
 
 axios.defaults.withCredentials = true;
 
@@ -70,98 +71,30 @@ const HealthFoodData = () => {
   };
 
   const [data, setData] = useState<any>([]);
+  const [searchData, setSearchData] = useState({
+    tab: "제품명",
+    name: "",
+    useYN: "E",
+    date: "",
+  });
+  const [date, setDate] = useState<any>();
   const [pageState, goToPage] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
+  const [searchToggle, setSearchToggle] = useState<boolean>(false);
 
   // useEffect memory
   const [loading, setLoading] = useState(false);
 
-  //// search function
-  const GetLimitSearch = async (low_data: any) => {
-    try {
-      const tab = low_data.tab;
-      let searchTab;
-      if (tab === "제품명") {
-        searchTab = "PRDUCT";
-      } else if (tab === "제품번호") {
-        searchTab = "STTEMNT_NO";
-      } else if (tab === "제조사") {
-        searchTab = "ENTRPS";
-      }
-      const name = low_data.name;
+  useEffect(() => {
+    setLoading(true);
 
-      const useYN = low_data.useYN;
-      const date = low_data.date;
+    GetLimitData();
+    SetDate();
 
-      const response = await axios.get(
-        `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&limit=10`
-      );
-      const responsedata = response.data;
-      for (let i = 0; i < responsedata.length; i++) {
-        responsedata[i].index = i + 1;
-      }
-      setData(responsedata);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    setLoading(false);
+  }, []);
 
-  const GetAllSearch = async (low_data: any) => {
-    const tab = low_data.tab;
-    let searchTab;
-    if (tab === "제품명") {
-      searchTab = "PRDUCT";
-    } else if (tab === "제품번호") {
-      searchTab = "STTEMNT_NO";
-    } else if (tab === "제조사") {
-      searchTab = "ENTRPS";
-    }
-    const name = low_data.name;
-
-    const useYN = low_data.useYN;
-    const date = low_data.date;
-
-    const response = await axios.get(
-      `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}`
-    );
-    const responsedata = response.data;
-    for (let i = 0; i < responsedata.length; i++) {
-      responsedata[i].index = i + 1;
-    }
-    setData(responsedata);
-    try {
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const HighSearch = async (low_data: any) => {
-    try {
-      setLoading(true);
-      console.log(low_data);
-      GetLimitSearch(low_data);
-      GetAllSearch(low_data);
-
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // get data
-  const GetAllData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/item`);
-      const responsedata = response.data;
-      for (let i = 0; i < responsedata.length; i++) {
-        responsedata[i].index = i + 1;
-      }
-      setData(responsedata);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  // base
   const GetLimitData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/item/limit/10/1`);
@@ -170,11 +103,172 @@ const HealthFoodData = () => {
       for (let i = 0; i < responsedata.length; i++) {
         responsedata[i].index = i + 1;
       }
+
       setCount(responseLength);
       setData(responsedata);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  //// search function
+  const GetLimitSearch = async (lowData: any) => {
+    try {
+      setLoading(true);
+      const tab = lowData.tab;
+      let searchTab;
+      if (tab === "제품명") {
+        searchTab = "PRDUCT";
+      } else if (tab === "제품번호") {
+        searchTab = "STTEMNT_NO";
+      } else if (tab === "제조사") {
+        searchTab = "ENTRPS";
+      }
+      const name = lowData.name;
+
+      const useYN = lowData.useYN;
+      const date = lowData.date;
+
+      console.log(searchTab, name, date, useYN);
+
+      const response = await axios.get(
+        `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&page=1&limit=10`
+      );
+      const responsedata = response.data.data;
+      for (let i = 0; i < responsedata.length; i++) {
+        responsedata[i].index = i + 1;
+      }
+
+      setData(responsedata);
+      setCount(response.data.dataLength);
+      goToPage(1);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // on Change page
+  const pageChange = async (event: any, page: number) => {
+    try {
+      setLoading(true);
+
+      const response = await axios
+        .get(`http://localhost:3000/item/limit/10/${page}`)
+        .then(response => {
+          const responseData = response.data.data;
+          for (let i = 0; i < responseData.length; i++) {
+            responseData[i].index = i + 1 + (page - 1) * 10;
+          }
+
+          setData(responseData);
+          goToPage(page);
+          setLoading(false);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // on Change Search page
+  const searchPageChange = async (event: any, page: number) => {
+    try {
+      setLoading(true);
+
+      const tab = searchData.tab;
+      let searchTab;
+      if (tab === "제품명") {
+        searchTab = "PRDUCT";
+      } else if (tab === "제품번호") {
+        searchTab = "STTEMNT_NO";
+      } else if (tab === "제조사") {
+        searchTab = "ENTRPS";
+      }
+
+      const response = await axios.get(
+        `http://localhost:3000/search?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}&page=${page}&limit=10`
+      );
+      const responseData = response.data.data;
+      for (let i = 0; i < responseData.length; i++) {
+        responseData[i].index = i + 1 + (page - 1) * 10;
+      }
+
+      setData(responseData);
+      setCount(response.data.dataLength);
+      goToPage(page);
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 시간 적용
+  const SetDate = async () => {
+    const curr = new Date();
+
+    // UTC 시간 계산
+    const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
+
+    // 3. UTC to KST (UTC + 9시간)
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+    const kr_curr = new Date(utc + KR_TIME_DIFF);
+    const year = kr_curr.getFullYear();
+
+    const month = kr_curr.getMonth() + 1;
+    let current_month: string = `${month}`;
+    if (month < 10) {
+      current_month = `0` + month;
+    }
+    const date = kr_curr.getDate();
+    let current_date: string = `${date}`;
+    if (date < 10) {
+      current_date = `0` + date;
+    }
+
+    const str = year + "-" + current_month + "-" + current_date;
+
+    setDate({ firstDate: str, secondDate: str });
+  };
+
+  // Search Components
+  const HighSearch = async (low_data: any) => {
+    try {
+      setLoading(true);
+      GetLimitSearch(low_data);
+
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const HighSetSearch = async () => {
+    try {
+      setLoading(true);
+      setSearchToggle(true);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const HighSetSearchData = async (value: any, name: any) => {
+    try {
+      setSearchData({
+        ...searchData,
+        [name]: value,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const HighSetDate = async (value: any, name: any) => {
+    setDate({
+      ...date,
+      [name]: value,
+    });
   };
 
   const GetFile = async () => {
@@ -184,15 +278,6 @@ const HealthFoodData = () => {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    setLoading(true);
-
-    GetLimitData();
-    // GetAllData();
-
-    setLoading(false);
-  }, []);
 
   const columns = [
     {
@@ -279,53 +364,10 @@ const HealthFoodData = () => {
     },
   ];
 
-  const pageChange = async (page: number) => {
-    try {
-      setLoading(true);
-      console.log(page);
-      const response = await axios
-        .get(`http://localhost:3000/item/limit/10/${page}`)
-        .then(response => {
-          const responseData = response.data.data;
-
-          const copydatas = [];
-
-          if (responseData.length && responseData[0]._id != 1) {
-            for (let i = 1; i < responseData[0]._id; i++) {
-              copydatas.push({ _id: i, index: i });
-            }
-
-            for (let i = 0; i < responseData.length; i++) {
-              responseData[i].index = (page - 1) * 10 + i + 1;
-              copydatas.push(responseData[i]);
-            }
-            setData(copydatas);
-            goToPage(page);
-            setLoading(false);
-          } else {
-            for (let i = 0; i < responseData.length; i++) {
-              responseData[i].index = (page - 1) * 10 + i + 1;
-              copydatas.push(responseData[i]);
-            }
-            setData(copydatas);
-            goToPage(page);
-
-            setLoading(false);
-          }
-
-          // setData()
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const pageOptions: any = {
     sizePerPage: 10,
     totalSize: count, // replace later with size(customers),
     custom: true,
-    page: pageState,
-    onPageChange: pageChange,
   };
 
   const { SearchBar } = Search;
@@ -370,7 +412,14 @@ const HealthFoodData = () => {
                     <Row>
                       <Col xs={12}>
                         {/* import TextualInputs */}
-                        <ProductSearchForm propFunction={HighSearch} />
+                        <ProductSearchForm
+                          propFunction={HighSearch}
+                          setSearch={HighSetSearch}
+                          setData={HighSetSearchData}
+                          ChangeDate={HighSetDate}
+                          date={date}
+                          data={searchData}
+                        />
                       </Col>
                     </Row>
                   </Container>
@@ -404,17 +453,6 @@ const HealthFoodData = () => {
                       >
                         {toolkitProps => (
                           <React.Fragment>
-                            {/* <Row className="mb-2">
-                              <Col md="4">
-                                <div className="search-box me-2 mb-2 d-inline-block">
-                                  <div className="position-relative">
-                                    <SearchBar {...toolkitProps.searchProps} />
-                                    <i className="bx bx-search-alt search-icon" />
-                                  </div>
-                                </div>
-                              </Col>
-                            </Row> */}
-
                             <Row>
                               <Col xl="12">
                                 <div className="table-responsive">
@@ -431,17 +469,18 @@ const HealthFoodData = () => {
                                 </div>
                               </Col>
                             </Row>
-
-                            <Row className="align-items-md-center mt-30">
+                            <Row>
                               <Col className="inner-custom-pagination d-flex">
-                                <div className="d-inline">
-                                  <SizePerPageDropdownStandalone
-                                    {...paginationProps}
-                                  />
-                                </div>
                                 <div className="text-md-right ms-auto">
-                                  <PaginationListStandalone
-                                    {...paginationProps}
+                                  <Pagination
+                                    count={Math.ceil(count / 10)}
+                                    color="primary"
+                                    page={pageState}
+                                    onChange={
+                                      searchToggle
+                                        ? searchPageChange
+                                        : pageChange
+                                    }
                                   />
                                 </div>
                               </Col>
