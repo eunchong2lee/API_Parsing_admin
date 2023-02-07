@@ -38,6 +38,7 @@
     "draft-js": "0.10.2",
     "echarts": "^4.9.0",
     "echarts-for-react": "^3.0.1",
+    "embed-video": "^2.0.4",
     "feather-icons-react": "^0.4.3",
     "file-saver": "^2.0.5",
     "firebase": "^8.7.0",

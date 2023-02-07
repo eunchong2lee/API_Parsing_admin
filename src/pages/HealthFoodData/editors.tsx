@@ -4,6 +4,7 @@ import { Card, CardBody, Col, Row, Button, Input } from "reactstrap";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import axios from "axios";
+import embed from "embed-video";
 
 const HealthFoodFormEditors = (props: any) => {
   const [loading, setLoading] = useState(0);
@@ -145,6 +146,17 @@ const HealthFoodFormEditors = (props: any) => {
                     defaultSize: {
                       height: "auto",
                       width: "auto",
+                    },
+                  },
+                  link: {
+                    linkCallback: (params: any) => ({ ...params }),
+                  },
+                  embedded: {
+                    embedCallback: (link: any) => {
+                      const detectedSrc = /<iframe.*? src="(.*?)"/.exec(
+                        embed(link)
+                      );
+                      return (detectedSrc && detectedSrc[1]) || link;
                     },
                   },
                 }}
