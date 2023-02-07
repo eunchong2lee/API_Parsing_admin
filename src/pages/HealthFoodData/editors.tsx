@@ -1,31 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import MetaTags from "react-meta-tags";
-import { Link } from "react-router-dom";
-import {
-  Form,
-  Card,
-  CardBody,
-  Col,
-  Row,
-  Container,
-  CardHeader,
-  Button,
-  Label,
-  Input,
-} from "reactstrap";
-import {
-  ContentState,
-  convertFromRaw,
-  convertToRaw,
-  EditorState,
-} from "draft-js";
-
+import { Card, CardBody, Col, Row, Button, Input } from "reactstrap";
 // Form Editor
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-//Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
 import axios from "axios";
 
 const HealthFoodFormEditors = (props: any) => {
@@ -45,10 +22,6 @@ const HealthFoodFormEditors = (props: any) => {
     props.propDeleteFunction(index);
   };
 
-  const fileOnclick = () => {};
-
-  const setData = () => {};
-
   // const postContent = async () => {
   //   const draft_data = JSON.stringify(
   //     convertToRaw(content.getCurrentContent())
@@ -66,7 +39,6 @@ const HealthFoodFormEditors = (props: any) => {
   // };
 
   // const getContent = async () => {
-  //   console.log(1);
   //   await axios.get(`http://localhost:3000/draft?id=3`).then(response => {
   //     const response_data = response.data;
   //     console.log(response_data);
@@ -101,10 +73,39 @@ const HealthFoodFormEditors = (props: any) => {
   //     });
   // };
 
+  // const uploadCallback = (file: string | Blob, callback: any) => {
+  //   console.log(file);
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new window.FileReader();
+  //     console.log(reader);
+  //     reader.onloadend = async () => {
+  //       const form_data = new FormData();
+  //       form_data.append("file", file);
+  //       const res = await uploadFile(form_data);
+  //       setValue("thumbnail", res.data);
+  //       resolve({ data: { link: process.env.REACT_APP_API + res.data } });
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+
+  const uploadCallback = async (file: Blob) => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      const body = { id: 1 };
+      formData.append("image", file);
+      formData.append("id", "1");
+      axios
+        .post(`http://localhost:3000/draft/image`, formData)
+        .then(response => {
+          resolve({ data: { link: response.data } });
+          // resolve(`<img src= ${response.data}>`);
+        });
+    });
+  };
+
   useEffect(() => {
-    setData();
     setLoading(1);
-    console.log("toggle", props.toggleOnOff);
   }, []);
 
   if (!loading) {
@@ -134,6 +135,19 @@ const HealthFoodFormEditors = (props: any) => {
                 toolbarClassName="toolbarClassName"
                 wrapperClassName="wrapperClassName"
                 editorClassName="editorClassName"
+                toolbar={{
+                  image: {
+                    uploadCallback: uploadCallback,
+                    previewImage: true,
+                    inputAccept:
+                      "image/gif,image/jpeg,image/jpg,image/png,image/svg",
+                    alt: { present: true, mandatory: false },
+                    defaultSize: {
+                      height: "auto",
+                      width: "auto",
+                    },
+                  },
+                }}
                 onEditorStateChange={(content: any) =>
                   onChangeEditor({ content })
                 }

@@ -372,11 +372,7 @@ const HealthFoodData = () => {
 
   const { SearchBar } = Search;
 
-  if (loading) {
-    return null;
-  }
-
-  if (!data.length) {
+  if (loading || !data.length) {
     return null;
   }
 

@@ -34,8 +34,6 @@ import { EditorState } from "draft-js";
 // component
 
 const HealthFoodDataRegister = () => {
-  const [loading, setLoading] = useState(false);
-
   const setting = {
     PRDUCT: "",
     STTEMNT_NO: "",
@@ -51,20 +49,24 @@ const HealthFoodDataRegister = () => {
     PRMS_STANDARD: "",
   };
 
+  const [loading, setLoading] = useState(false);
   // modal
   const [RegistModal, setRegistModal] = useState(false);
-
-  const toggle = () => setRegistModal(!RegistModal);
-
+  // data 및 images
   const [data, setData] = useState<any>(setting);
   const [selectedFiles, setselectedFiles] = useState<any>([]);
-
   // editor content
   const [content, setContent] = useState<EditorState>(() =>
     EditorState.createEmpty()
   );
   // pdf file upload
   const [File, setFile] = useState<any[]>([]);
+  // 성분
+  const [inputItems, setInputItems] = useState<InputItem[]>([
+    { standard: "", quantity: "" },
+  ]);
+
+  const toggle = () => setRegistModal(!RegistModal);
 
   ////////////// 성분 //////////////////
   interface InputItem {
@@ -72,22 +74,14 @@ const HealthFoodDataRegister = () => {
     quantity: string;
   }
 
-  //   const nextID = useRef<number>(1);
-  const [inputItems, setInputItems] = useState<InputItem[]>([
-    { standard: "", quantity: "" },
-  ]);
-
   // 추가
   function addInput() {
     const input = {
       standard: "",
       quantity: "",
     };
-
     setInputItems([...inputItems, input]); // 기존 값에 새로운 인풋객체를 추가해준다.
-    // nextID.current += 1; // id값은 1씩 늘려준다.
   }
-
   // 삭제
   function deleteInput() {
     const parse_length = inputItems.length - 1;
@@ -99,7 +93,6 @@ const HealthFoodDataRegister = () => {
   }
 
   // Change
-
   const standardChange = (
     index: number,
     e: { target: { value: any; name: any } }
@@ -111,7 +104,6 @@ const HealthFoodDataRegister = () => {
     new_inputItems[index][name] = value;
     setInputItems(new_inputItems);
   };
-  /////////////////////////////////////
 
   const onChange = (e: { target: { value: any; name: any } }) => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
@@ -120,33 +112,6 @@ const HealthFoodDataRegister = () => {
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
     console.log(data);
-  };
-
-  const postData = async () => {
-    const formData = new FormData();
-    let final_data = data;
-    let parse_data: any = new Object();
-    if (inputItems.length) {
-      for (let i = 0; i < inputItems.length; i++) {
-        const key = inputItems[i].standard;
-        const value = inputItems[i].quantity;
-        parse_data[key] = value;
-      }
-    }
-
-    final_data.PRMS_STANDARD = parse_data;
-    formData.append("file", selectedFiles[0]);
-    formData.append("data", JSON.stringify(data));
-
-    await axios
-      .post("http://localhost:3000/item", formData)
-      .then(response => {
-        console.log("response", response.data);
-        window.location.href = `/HealthFoodData`;
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   function handleAcceptedFiles(files: any) {
@@ -159,19 +124,7 @@ const HealthFoodDataRegister = () => {
     setselectedFiles(files);
   }
 
-  function formatBytes(bytes: any, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-
-  ////////////////////////////////////////////////////////////////
   // data 값 변경
-
   const searchstandardChange = (data: any) => {
     const low_data = data.low_data;
     const index = data.index;
@@ -181,6 +134,16 @@ const HealthFoodDataRegister = () => {
     setInputItems(new_inputItems);
     console.log(inputItems, "변경");
   };
+
+  function formatBytes(bytes: any, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
 
   // low component data
   const HighSearch = (low_data: any) => {
@@ -212,8 +175,60 @@ const HealthFoodDataRegister = () => {
     const newFile = File.filter((file, i) => {
       return i != index;
     });
-
     setFile(newFile);
+  };
+
+  // server 요청
+  const postData = async () => {
+    const formData = new FormData();
+
+    let parse_data: any = new Object();
+    if (inputItems.length) {
+      for (let i = 0; i < inputItems.length; i++) {
+        const key = inputItems[i].standard;
+        const value = inputItems[i].quantity;
+        parse_data[key] = value;
+      }
+    }
+
+    console.log(parse_data);
+
+    // image input
+    if (selectedFiles.length) {
+      for (const images of selectedFiles) {
+        formData.append("images", images);
+      }
+    }
+
+    // file input
+    if (File.length) {
+      for (const file of File) {
+        formData.append("files", file);
+      }
+    }
+
+    // data input
+    formData.append("PRDUCT", data.PRDUCT);
+    formData.append("STTEMNT_NO", data.STTEMNT_NO);
+    formData.append("ENTRPS", data.ENTRPS);
+    formData.append("REGIST_DT", data.REGIST_DT);
+    formData.append("DISTB_PD", data.DISTB_PD);
+    formData.append("SUNGSANG", data.SUNGSANG);
+    formData.append("SRV_USE", data.SRV_USE);
+    formData.append("PRSRV_PD", data.PRSRV_PD);
+    formData.append("INTAKE_HINT1", data.INTAKE_HINT1);
+    formData.append("MAIN_FNCTN", data.MAIN_FNCTN);
+    formData.append("PRMS_STANDARD", parse_data);
+
+    await axios
+      .post("http://localhost:3000/item", formData)
+      .then(response => {
+        console.log("response", response);
+        // window.location.href = `/HealthFoodData`;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
