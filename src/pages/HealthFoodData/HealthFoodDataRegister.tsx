@@ -29,7 +29,7 @@ import { AvForm, AvField } from "availity-reactstrap-validation";
 import { CardBody, Card } from "reactstrap";
 import StandardSearch from "./StandardSearch";
 import HealthFoodFormEditors from "./editors";
-import { EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 
 // component
 
@@ -191,8 +191,6 @@ const HealthFoodDataRegister = () => {
       }
     }
 
-    console.log(parse_data);
-
     // image input
     if (selectedFiles.length) {
       for (const images of selectedFiles) {
@@ -207,6 +205,9 @@ const HealthFoodDataRegister = () => {
       }
     }
 
+    // draft input
+    const draftData = JSON.stringify(convertToRaw(content.getCurrentContent()));
+
     // data input
     formData.append("PRDUCT", data.PRDUCT);
     formData.append("STTEMNT_NO", data.STTEMNT_NO);
@@ -218,12 +219,13 @@ const HealthFoodDataRegister = () => {
     formData.append("PRSRV_PD", data.PRSRV_PD);
     formData.append("INTAKE_HINT1", data.INTAKE_HINT1);
     formData.append("MAIN_FNCTN", data.MAIN_FNCTN);
+    formData.append("draft", draftData);
     formData.append("PRMS_STANDARD", parse_data);
 
     await axios
       .post("http://localhost:3000/item", formData)
       .then(response => {
-        console.log("response", response);
+        // 완료시
         // window.location.href = `/HealthFoodData`;
       })
       .catch(err => {

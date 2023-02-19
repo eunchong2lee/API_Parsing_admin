@@ -273,7 +273,19 @@ const HealthFoodData = () => {
 
   const GetFile = async () => {
     try {
-      window.open("http://localhost:3000/item/file", "_blank");
+      const tab = searchData.tab;
+      let searchTab;
+      if (tab === "제품명") {
+        searchTab = "PRDUCT";
+      } else if (tab === "제품번호") {
+        searchTab = "STTEMNT_NO";
+      } else if (tab === "제조사") {
+        searchTab = "ENTRPS";
+      }
+      window.open(
+        `http://localhost:3000/item/file?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}`,
+        "_blank"
+      );
     } catch (err) {
       console.log(err);
     }

@@ -26,16 +26,20 @@ import { CardBody, Card } from "reactstrap";
 // component
 import StandardSearch from "./StandardSearch";
 import HealthFoodFormEditors from "./editors";
-import { EditorState } from "draft-js";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 
 const HealthFoodDataRevise = () => {
+  // interface
+  interface InputItem {
+    standard: string;
+    quantity: string;
+  }
+
+  const [loading, setLoading] = useState(false);
+
+  // basic data
   const [data, setData] = useState<any>([]);
   const [copydata, setCopyData] = useState<any>([]);
-
-  const [selectedMulti, setselectedMulti] = useState(null);
-  const [selectedFiles, setselectedFiles] = useState<any>([]);
-  // useEffect memory
-  const [loading, setLoading] = useState(false);
 
   // 수정 완료 취소
   const [toggle, setToggle] = useState(0);
@@ -48,16 +52,25 @@ const HealthFoodDataRevise = () => {
   const [errortoggle, setErrortoggle] = useState<number>(0);
   const ErrorToggle = (statusCode: number) => setErrortoggle(statusCode);
 
-  //   const nextID = useRef<number>(1);
+  //   standard
   const [inputItems, setInputItems] = useState<InputItem[]>([]);
   const [inputcopyItems, setInputcopyItems] = useState<InputItem[]>([]);
 
-  // editor content
+  // editor content, copyContent
   const [content, setContent] = useState<EditorState>(() =>
     EditorState.createEmpty()
   );
+  const [copyContent, setCopyContent] = useState<EditorState>(() =>
+    EditorState.createEmpty()
+  );
+
+  // images
+  const [selectedFiles, setselectedFiles] = useState<any[]>([]);
+  const [requestImages, setRequestImages] = useState<any[]>([]);
+
   // pdf file upload
   const [File, setFile] = useState<any[]>([]);
+  const [requestFiles, setRequestFiles] = useState<any[]>([]);
 
   // low component data
   const HighEditorData = async (low_data: any) => {
@@ -68,13 +81,21 @@ const HealthFoodDataRevise = () => {
       }
 
       if (low_data.file) {
-        setFile([low_data.file]);
+        Object.assign(low_data.file, {
+          new: true,
+        });
+        setFile([...File, low_data.file]);
       }
-
-      console.log(content, File);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const HighDeleteFile = (index: number) => {
+    const newFile = File.filter((file, i) => {
+      return i != index;
+    });
+    setFile(newFile);
   };
 
   // searchstandard
@@ -104,25 +125,55 @@ const HealthFoodDataRevise = () => {
       const response = await axios
         .get(`http://localhost:3000/item/${id}`)
         .then(response => {
-          console.log(response);
-          if (response.data) {
+          console.log(response.data);
+          if (response.data.item) {
             console.log("data 받아왔습니다.");
-            const responsedata = response.data;
-            setData(responsedata);
-            setCopyData(responsedata);
-            const JSON_data = JSON.parse(responsedata.PRMS_STANDARD);
-            const data_length = Object.keys(JSON_data);
-            const input_item: any = [];
-            for (let i = 0; i < data_length.length; i++) {
-              const key = Object.keys(JSON_data)[i];
-              const value = JSON_data[Object.keys(JSON_data)[i]];
-              const new_object: InputItem = { standard: key, quantity: value };
-              input_item.push(new_object);
-            }
-            const copyinput_item = JSON.parse(JSON.stringify(input_item));
+            const responseData = response.data.item;
+            setData(responseData);
+            setCopyData(responseData);
 
-            setInputItems(input_item);
-            setInputcopyItems(copyinput_item);
+            if (responseData.PRMS_STANDARD) {
+              const JSONData = JSON.parse(responseData.PRMS_STANDARD);
+              const dataLength = Object.keys(JSONData);
+              const inputItem: any = [];
+
+              for (let i = 0; i < dataLength.length; i++) {
+                const key = Object.keys(JSONData)[i];
+                const value = JSONData[Object.keys(JSONData)[i]];
+                const new_object: InputItem = {
+                  standard: key,
+                  quantity: value,
+                };
+                inputItem.push(new_object);
+              }
+              const copyinputItem = JSON.parse(JSON.stringify(inputItem));
+
+              setInputItems(inputItem);
+              setInputcopyItems(copyinputItem);
+            }
+          }
+
+          if (response.data.draft) {
+            const responseData = response.data.draft;
+            if (JSON.stringify(responseData) !== "{}") {
+              const draftData = convertFromRaw(JSON.parse(responseData.text));
+              const editorData = EditorState.createWithContent(draftData);
+              const copyeEditorData = JSON.parse(JSON.stringify(editorData));
+              setContent(editorData);
+              setCopyContent(copyeEditorData);
+            }
+          }
+
+          if (response.data.images.length) {
+            const responseData = response.data.images;
+            setRequestImages(responseData);
+            setselectedFiles(responseData);
+          }
+
+          if (response.data.files.length) {
+            const responseData = response.data.files;
+            setRequestFiles(responseData);
+            setFile(responseData);
           }
         });
     } catch (err) {
@@ -145,15 +196,12 @@ const HealthFoodDataRevise = () => {
   const CancelClick = () => {
     setCopyData(data);
     setInputItems(inputcopyItems);
-    setselectedFiles([]);
+    setContent(copyContent);
+    setFile(requestFiles);
+    setselectedFiles(requestImages);
   };
 
   ////////////// 성분 //////////////////
-  interface InputItem {
-    standard: string;
-    quantity: string;
-  }
-
   // 추가
   function addInput() {
     const input = {
@@ -162,7 +210,6 @@ const HealthFoodDataRevise = () => {
     };
 
     setInputItems([...inputItems, input]); // 기존 값에 새로운 인풋객체를 추가해준다.
-    // nextID.current += 1; // id값은 1씩 늘려준다.
   }
 
   // 삭제
@@ -181,50 +228,72 @@ const HealthFoodDataRevise = () => {
     e: { target: { value: any; name: any } }
   ) => {
     const { value, name } = e.target;
-    console.log(value, name, index);
 
     const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
     new_inputItems[index][name] = value;
     setInputItems(new_inputItems);
-    console.log(inputItems, inputcopyItems);
   };
   /////////////////////////////////////
 
   const onChange = (e: { target: { value: any; name: any } }) => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
-    console.log(value, name);
     setCopyData({
       ...copydata, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
-    console.log(copydata);
   };
 
   const putData = async () => {
     const url = window.location.href;
     const id = url.split("/")[url.split("/").length - 1];
+
+    // form data
     const formData = new FormData();
-    let final_data = data;
-    let parse_data: any = new Object();
+
+    // standard parsing
+    let parseData: any = new Object();
     if (inputItems.length) {
       for (let i = 0; i < inputItems.length; i++) {
         const key = inputItems[i].standard;
         const value = inputItems[i].quantity;
-        parse_data[key] = value;
+        parseData[key] = value;
       }
     }
-    console.log(inputItems, inputcopyItems);
+    // draft data
+    const draftData = JSON.stringify(convertToRaw(content.getCurrentContent()));
 
-    final_data.PRMS_STANDARD = parse_data;
-    console.log(final_data);
-    formData.append("file", selectedFiles[0]);
-    formData.append("data", JSON.stringify(copydata));
+    // image input
+    if (selectedFiles.length) {
+      for (const images of selectedFiles) {
+        formData.append("images", images);
+      }
+    }
+
+    // file input
+    if (File.length) {
+      for (const file of File) {
+        formData.append("files", file);
+      }
+    }
+
+    formData.append("PRDUCT", copydata.PRDUCT);
+    formData.append("STTEMNT_NO", copydata.STTEMNT_NO);
+    formData.append("ENTRPS", copydata.ENTRPS);
+    formData.append("REGIST_DT", copydata.REGIST_DT);
+    formData.append("DISTB_PD", copydata.DISTB_PD);
+    formData.append("SUNGSANG", copydata.SUNGSANG);
+    formData.append("SRV_USE", copydata.SRV_USE);
+    formData.append("PRSRV_PD", copydata.PRSRV_PD);
+    formData.append("INTAKE_HINT1", copydata.INTAKE_HINT1);
+    formData.append("MAIN_FNCTN", copydata.MAIN_FNCTN);
+    formData.append("draft", draftData);
+    formData.append("PRMS_STANDARD", parseData);
 
     await axios
       .put(`http://localhost:3000/item/${id}`, formData)
       .then(response => {
         const responsedata = response.data;
-        console.log(responsedata);
+
         responsedata.PRMS_STANDARD = JSON.stringify(responsedata.PRMS_STANDARD);
         setData(responsedata);
         setCopyData(responsedata);
@@ -247,18 +316,23 @@ const HealthFoodDataRevise = () => {
       });
   };
 
-  function handleMulti(selectedMulti: any) {
-    setselectedMulti(selectedMulti);
-  }
+  const deleteImage = async (i: number) => {
+    setselectedFiles(
+      selectedFiles.filter((item, index) => {
+        return index != i;
+      })
+    );
+  };
 
   function handleAcceptedFiles(files: any) {
     files.map((file: any) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         formattedSize: formatBytes(file.size),
+        new: true,
       })
     );
-    setselectedFiles(files);
+    setselectedFiles([...selectedFiles, ...files]);
   }
 
   function formatBytes(bytes: any, decimals = 2) {
@@ -270,16 +344,6 @@ const HealthFoodDataRevise = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
-
-  const optionGroup = [
-    { label: "Photoshop", value: "photoshop" },
-    { label: "illustrator", value: "illustrator" },
-    { label: "HTML", value: "HTML" },
-    { label: "CSS", value: "CSS" },
-    { label: "Javascript", value: "Javascript" },
-    { label: "Php", value: "Php" },
-    { label: "Python", value: "Python" },
-  ];
 
   return (
     <div className="page-content">
@@ -794,25 +858,39 @@ const HealthFoodDataRevise = () => {
                               >
                                 <div className="p-2">
                                   <Row className="align-items-center">
-                                    <Col className="col-auto">
-                                      <img
-                                        data-dz-thumbnail=""
-                                        height="80"
-                                        className="avatar-sm rounded bg-light"
-                                        alt={f.name}
-                                        src={f.preview}
-                                      />
+                                    <Col xl={11}>
+                                      <Row>
+                                        <Col className="col-auto">
+                                          <img
+                                            data-dz-thumbnail=""
+                                            height="80"
+                                            className="avatar-sm rounded bg-light"
+                                            alt={f.name}
+                                            src={f.preview}
+                                          />
+                                        </Col>
+                                        <Col>
+                                          <Link
+                                            to="#"
+                                            className="text-muted font-weight-bold"
+                                          >
+                                            {f.name}
+                                          </Link>
+                                          <p className="mb-0">
+                                            {/* <strong>{f.formattedSize}</strong> */}
+                                          </p>
+                                        </Col>
+                                      </Row>
                                     </Col>
-                                    <Col>
-                                      <Link
-                                        to="#"
-                                        className="text-muted font-weight-bold"
+                                    <Col xl={1}>
+                                      <Button
+                                        color="danger"
+                                        onClick={() => {
+                                          deleteImage(i);
+                                        }}
                                       >
-                                        {f.name}
-                                      </Link>
-                                      <p className="mb-0">
-                                        {/* <strong>{f.formattedSize}</strong> */}
-                                      </p>
+                                        x
+                                      </Button>
                                     </Col>
                                   </Row>
                                 </div>
@@ -831,6 +909,7 @@ const HealthFoodDataRevise = () => {
                     content={content}
                     file={File}
                     propFunction={HighEditorData}
+                    propDeleteFunction={HighDeleteFile}
                   ></HealthFoodFormEditors>
                 </div>
 

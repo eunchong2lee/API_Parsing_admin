@@ -23,22 +23,6 @@ const HealthFoodFormEditors = (props: any) => {
     props.propDeleteFunction(index);
   };
 
-  // const postContent = async () => {
-  //   const draft_data = JSON.stringify(
-  //     convertToRaw(content.getCurrentContent())
-  //   );
-  //   console.log(draft_data);
-
-  //   await axios
-  //     .post(`http://localhost:3000/draft/`, { data: draft_data })
-  //     .then(response => {
-  //       const response_data = response.data;
-
-  //       console.log("message", response_data.message);
-  //       console.log("data", response_data.data);
-  //     });
-  // };
-
   // const getContent = async () => {
   //   await axios.get(`http://localhost:3000/draft?id=3`).then(response => {
   //     const response_data = response.data;
@@ -72,22 +56,6 @@ const HealthFoodFormEditors = (props: any) => {
   //     .catch(err => {
   //       console.log(err);
   //     });
-  // };
-
-  // const uploadCallback = (file: string | Blob, callback: any) => {
-  //   console.log(file);
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new window.FileReader();
-  //     console.log(reader);
-  //     reader.onloadend = async () => {
-  //       const form_data = new FormData();
-  //       form_data.append("file", file);
-  //       const res = await uploadFile(form_data);
-  //       setValue("thumbnail", res.data);
-  //       resolve({ data: { link: process.env.REACT_APP_API + res.data } });
-  //     };
-  //     reader.readAsDataURL(file);
-  //   });
   // };
 
   const uploadCallback = async (file: Blob) => {

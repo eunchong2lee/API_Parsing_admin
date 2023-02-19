@@ -18,22 +18,10 @@ import {
   CardBody,
   CardTitle,
   CardHeader,
-  Pagination,
-  PaginationLink,
-  PaginationItem,
-  InputGroup,
-  ButtonDropdown,
   Button,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Dropdown,
   Input,
-  UncontrolledDropdown,
   FormGroup,
   Label,
-  FormText,
-  Form,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
@@ -42,11 +30,6 @@ import {
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { render } from "@testing-library/react";
 // import "./datatables.scss";
-
-//Import HealthFoodData Component
-// import Production_List from "../../components/ProductionLayout/List";
-// import Production_Search from "../../components/ProductionLayout/Search";
-// import Production_Total from "../../components/ProductionLayout/Total";
 
 const HealthFoodDataDetail = () => {
   // const { SearchBar } = Search;
