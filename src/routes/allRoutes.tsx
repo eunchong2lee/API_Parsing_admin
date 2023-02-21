@@ -1,16 +1,10 @@
 import { Redirect } from "react-router-dom";
 
-//profile
-import UserProfile from "../pages/Authentication/user-profile";
-
 //Error
 import Error1 from "../pages/Error/Error1";
 import Error2 from "../pages/Error/Error2";
 import ErrorBasic from "../pages/Error/ErrorBasic";
 import ErrorCover from "../pages/Error/ErrorCover";
-
-//Authentication pages
-import Logout from "../pages/Authentication/Logout";
 
 // Productions
 import HealthFoodData from "src/pages/HealthFoodData/HealthFoodData";
@@ -32,9 +26,6 @@ interface RouteProps {
 }
 
 const userRoutes: Array<RouteProps> = [
-  // //profile
-  { path: "/profile", component: UserProfile },
-
   //healthfooddata
   { path: "/HealthFoodData", component: HealthFoodData },
   { path: "/HealthFoodDataRegister", component: HealthFoodDataRegister },
@@ -50,9 +41,6 @@ const userRoutes: Array<RouteProps> = [
 ];
 
 const authRoutes: Array<RouteProps> = [
-  //Authentication pages
-  { path: "/logout", component: Logout },
-
   { path: "/error-404-basic", component: Error1 },
   { path: "/error-404-cover", component: Error2 },
   { path: "/error-500-basic", component: ErrorBasic },

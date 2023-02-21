@@ -9,19 +9,6 @@ const Footer = () => {
         <Container fluid={true}>
           <Row>
             <Col md={6}>{new Date().getFullYear()} © 건강식품관리.</Col>
-            <Col md={6}>
-              <div className="text-sm-end d-none d-sm-block">
-                Crafted with <i className="mdi mdi-heart text-danger"></i> by{" "}
-                <Link
-                  to="https://Pichforest.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-reset"
-                >
-                  Pichforest
-                </Link>
-              </div>
-            </Col>
           </Row>
         </Container>
       </footer>

@@ -9,7 +9,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-import ApexBar from "../AllCharts/apex/apexbar";
+import ApexBar from "./apexbar";
 
 const UserActivity = () => {
   const [menu, setMenu] = useState<boolean>(false);

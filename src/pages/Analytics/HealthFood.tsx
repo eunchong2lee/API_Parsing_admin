@@ -12,7 +12,6 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-import UserChart from "../AllCharts/apex/UserChart";
 import HealthFoodChart from "./HealthFoodChart";
 
 const HealthFood = (props: any) => {

@@ -4,12 +4,6 @@ export * from "./Layout/thunk";
 /** Contact */
 export * from "./Contacts/thunk";
 
-/** Calendar */
-export * from "./Calendar/thunk";
-
-/** Chat */
-export * from "./Chat/thunk";
-
 // /** Invoices */
 export * from "./Invoices/thunk";
 
@@ -17,13 +11,13 @@ export * from "./Invoices/thunk";
 export * from "./Projects/thunk";
 
 // // kanbanboards
-export * from "./Kanbanboards/thunk"
+export * from "./Kanbanboards/thunk";
 
 // /** Register */
 export * from "./Auth/Register/thunk";
 
 /** Login */
-export * from "./Auth/Login/thunk"
+export * from "./Auth/Login/thunk";
 
 // /** User Profile */
 export * from "./Auth/Profile/thunk";
