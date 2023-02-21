@@ -220,7 +220,7 @@ const HealthFoodDataRegister = () => {
     formData.append("INTAKE_HINT1", data.INTAKE_HINT1);
     formData.append("MAIN_FNCTN", data.MAIN_FNCTN);
     formData.append("draft", draftData);
-    formData.append("PRMS_STANDARD", parse_data);
+    formData.append("PRMS_STANDARD", JSON.stringify(parse_data));
 
     await axios
       .post("http://localhost:3000/item", formData)
@@ -375,7 +375,7 @@ const HealthFoodDataRegister = () => {
                                 권유 섭취량
                               </label>
                               <input
-                                name="SUNGSANG"
+                                name="SRV_USE"
                                 type="text"
                                 className="form-control"
                                 id="SRV_USE"
@@ -414,7 +414,7 @@ const HealthFoodDataRegister = () => {
                                 보관장소
                               </label>
                               <input
-                                name="SUNGSANG"
+                                name="PRSRV_PD"
                                 type="text"
                                 className="form-control"
                                 id="PRSRV_PD"

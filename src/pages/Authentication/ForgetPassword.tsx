@@ -48,8 +48,18 @@ const ForgetPasswordPage = ({ history }: ForgetPasswordProps) => {
                 <div className="text-center py-5">
                   <div className="mb-4 mb-md-5">
                     <Link to="/sales" className="d-block auth-logo">
-                      <img src={logoDark} alt="" height="22" className="auth-logo-dark" />
-                      <img src={logolight} alt="" height="22" className="auth-logo-light" />
+                      <img
+                        src={logoDark}
+                        alt=""
+                        height="22"
+                        className="auth-logo-dark"
+                      />
+                      <img
+                        src={logolight}
+                        alt=""
+                        height="22"
+                        className="auth-logo-light"
+                      />
                     </Link>
                   </div>
                   <div className="text-muted mb-4">
@@ -70,9 +80,7 @@ const ForgetPasswordPage = ({ history }: ForgetPasswordProps) => {
 
                   <AvForm
                     className="custom-form mt-4"
-                    onValidSubmit={(e: any, v: any) =>
-                      handleValidSubmit(e, v)
-                    }
+                    onValidSubmit={(e: any, v: any) => handleValidSubmit(e, v)}
                   >
                     <div className="form-floating form-floating-custom mb-3">
                       <AvField
@@ -85,19 +93,24 @@ const ForgetPasswordPage = ({ history }: ForgetPasswordProps) => {
                       />
                     </div>
                     <div className="mt-3">
-                      <button
-                        className="btn btn-info w-100"
-                        type="submit"
-                      >
+                      <button className="btn btn-info w-100" type="submit">
                         Reset
                       </button>
                     </div>
                   </AvForm>
 
                   <div className="mt-5 text-center text-muted">
-                    <p>Remember It ? <Link to="login" className="fw-medium text-decoration-underline"> Sign In </Link></p>
+                    <p>
+                      Remember It ?{" "}
+                      <Link
+                        to="login"
+                        className="fw-medium text-decoration-underline"
+                      >
+                        {" "}
+                        Sign In{" "}
+                      </Link>
+                    </p>
                   </div>
-
                 </div>
               </Col>
             </Row>
@@ -105,13 +118,14 @@ const ForgetPasswordPage = ({ history }: ForgetPasswordProps) => {
             <Row>
               <Col lg="12">
                 <div className="text-center text-muted p-4">
-                  <p className="mb-0">&copy; {" "}{new Date().getFullYear()} Dashonic. Crafted with <i className="mdi mdi-heart text-danger"></i> by Pichforest</p>
+                  <p className="mb-0">
+                    &copy; {new Date().getFullYear()} Dashonic. Crafted with{" "}
+                    <i className="mdi mdi-heart text-danger"></i> by Pichforest
+                  </p>
                 </div>
               </Col>
             </Row>
-
           </div>
-
         </Container>
       </div>
     </React.Fragment>

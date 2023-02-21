@@ -134,10 +134,11 @@ const HealthFoodDataRevise = () => {
 
             if (responseData.PRMS_STANDARD) {
               const JSONData = JSON.parse(responseData.PRMS_STANDARD);
-              const dataLength = Object.keys(JSONData);
+
+              const dataLength = Object.keys(JSONData).length;
               const inputItem: any = [];
 
-              for (let i = 0; i < dataLength.length; i++) {
+              for (let i = 0; i < dataLength; i++) {
                 const key = Object.keys(JSONData)[i];
                 const value = JSONData[Object.keys(JSONData)[i]];
                 const new_object: InputItem = {
@@ -275,6 +276,7 @@ const HealthFoodDataRevise = () => {
         formData.append("files", file);
       }
     }
+    console.log(copydata);
 
     formData.append("PRDUCT", copydata.PRDUCT);
     formData.append("STTEMNT_NO", copydata.STTEMNT_NO);
@@ -287,29 +289,54 @@ const HealthFoodDataRevise = () => {
     formData.append("INTAKE_HINT1", copydata.INTAKE_HINT1);
     formData.append("MAIN_FNCTN", copydata.MAIN_FNCTN);
     formData.append("draft", draftData);
-    formData.append("PRMS_STANDARD", parseData);
+    formData.append("PRMS_STANDARD", JSON.stringify(parseData));
 
     await axios
       .put(`http://localhost:3000/item/${id}`, formData)
       .then(response => {
-        const responsedata = response.data;
+        if (response.data.item) {
+          const responseData = response.data.item;
+          console.log(responseData);
+          setData(responseData);
+          setCopyData(responseData);
+          if (responseData.PRMS_STANDARD) {
+            const JSONData = JSON.parse(responseData.PRMS_STANDARD);
+            const dataLength = Object.keys(JSONData);
+            const inputItem = [];
+            for (let i = 0; i < dataLength.length; i++) {
+              const key = Object.keys(JSONData)[i];
+              const value = JSONData[Object.keys(JSONData)[i]];
+              const newObject: InputItem = { standard: key, quantity: value };
+              inputItem.push(newObject);
+            }
 
-        responsedata.PRMS_STANDARD = JSON.stringify(responsedata.PRMS_STANDARD);
-        setData(responsedata);
-        setCopyData(responsedata);
-        console.log(responsedata);
-        const JSON_data = JSON.parse(responsedata.PRMS_STANDARD);
-        const data_length = Object.keys(JSON_data);
-        const input_item = [];
-        for (let i = 0; i < data_length.length; i++) {
-          const key = Object.keys(JSON_data)[i];
-          const value = JSON_data[Object.keys(JSON_data)[i]];
-          const new_object: InputItem = { standard: key, quantity: value };
-          input_item.push(new_object);
+            setInputItems(inputItem);
+            setInputcopyItems(inputItem);
+          }
         }
 
-        setInputItems(input_item);
-        setInputcopyItems(input_item);
+        if (response.data.image.length) {
+          const responseData = response.data.image;
+          setRequestImages(responseData);
+          setselectedFiles(responseData);
+        }
+
+        if (response.data.file.length) {
+          const responseData = response.data.files;
+          setRequestFiles(responseData);
+          setFile(responseData);
+        }
+
+        if (response.data.draft) {
+          const responseData = response.data.draft;
+          if (JSON.stringify(responseData) !== "{}") {
+            const draftData = convertFromRaw(JSON.parse(responseData.text));
+            const editorData = EditorState.createWithContent(draftData);
+            const copyeEditorData = JSON.parse(JSON.stringify(editorData));
+            setContent(editorData);
+            setCopyContent(copyeEditorData);
+          }
+        }
       })
       .catch(err => {
         console.log(err);
@@ -394,9 +421,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.PRDUCT}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.PRDUCT ? (
                               <Card className="form-control">
                                 {data.PRDUCT}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -418,9 +449,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.STTEMNT_NO}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.STTEMNT_NO ? (
                               <Card className="form-control">
                                 {data.STTEMNT_NO}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -444,9 +479,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.ENTRPS}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.ENTRPS ? (
                               <Card className="form-control">
                                 {data.ENTRPS}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -468,9 +507,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.REGIST_DT}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.REGIST_DT ? (
                               <Card className="form-control">
                                 {data.REGIST_DT}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -494,9 +537,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.DISTB_PD}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.DISTB_PD ? (
                               <Card className="form-control">
                                 {data.DISTB_PD}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -518,9 +565,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.SRV_USE}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.SRV_USE ? (
                               <Card className="form-control">
                                 {data.SRV_USE}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -544,9 +595,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.SUNGSANG}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.SUNGSANG ? (
                               <Card className="form-control">
                                 {data.SUNGSANG}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -568,9 +623,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.PRSRV_PD}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.PRSRV_PD ? (
                               <Card className="form-control">
                                 {data.PRSRV_PD}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -595,9 +654,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.INTAKE_HINT1}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.INTAKE_HINT1 ? (
                               <Card className="form-control">
                                 {data.INTAKE_HINT1}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>
@@ -621,9 +684,13 @@ const HealthFoodDataRevise = () => {
                                 value={copydata.MAIN_FNCTN}
                                 onChange={onChange}
                               />
-                            ) : (
+                            ) : data.MAIN_FNCTN ? (
                               <Card className="form-control">
                                 {data.MAIN_FNCTN}
+                              </Card>
+                            ) : (
+                              <Card className="form-control">
+                                {"해당 정보가 없습니다."}
                               </Card>
                             )}
                           </div>

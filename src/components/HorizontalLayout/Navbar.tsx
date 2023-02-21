@@ -13,7 +13,6 @@ import { withTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const Navbar = (props: any) => {
-
   const [pricing, setpricing] = useState<boolean>(false);
   const [app, setapp] = useState<boolean>(false);
   const [email, setemail] = useState<boolean>(false);
@@ -88,10 +87,7 @@ const Navbar = (props: any) => {
             className="navbar navbar-light navbar-expand-lg topnav-menu"
             id="navigation"
           >
-            <Collapse
-              className="navbar-collapse"
-              id="topnav-menu-content"
-            >
+            <Collapse className="navbar-collapse" id="topnav-menu-content">
               <ul className="navbar-nav">
                 <li className="nav-item dropdown">
                   <Link
@@ -102,8 +98,7 @@ const Navbar = (props: any) => {
                       setdashoboard(!dashoboard);
                     }}
                   >
-                    <Icon name="monitor" />{" "}
-                    <span>{props.t("Dashboards")}</span>{" "}
+                    <Icon name="monitor" /> <span>{props.t("Dashboards")}</span>{" "}
                     <div className="arrow-down"></div>
                   </Link>
                   <div
@@ -127,8 +122,7 @@ const Navbar = (props: any) => {
                       setelements(!elements);
                     }}
                   >
-                    <Icon name="package" />{" "}
-                    <span>{props.t("Elements")}</span>
+                    <Icon name="package" /> <span>{props.t("Elements")}</span>
                     <div className="arrow-down"></div>
                   </Link>
                   <div
@@ -311,8 +305,7 @@ const Navbar = (props: any) => {
                       setapp(!app);
                     }}
                   >
-                    <Icon name="grid" />{" "}
-                    <span>{props.t("Apps")}</span>
+                    <Icon name="grid" /> <span>{props.t("Apps")}</span>
                     <div className="arrow-down"></div>
                   </Link>
                   <div className={classname("dropdown-menu", { show: app })}>
@@ -422,8 +415,7 @@ const Navbar = (props: any) => {
                       setcomponent(!component);
                     }}
                   >
-                    <Icon name="layers" />{" "}
-                    <span>{props.t("Components")}</span>
+                    <Icon name="layers" /> <span>{props.t("Components")}</span>
                     <div className="arrow-down"></div>
                   </Link>
                   <div
@@ -645,8 +637,7 @@ const Navbar = (props: any) => {
                       setextra(!extra);
                     }}
                   >
-                    <Icon name="file" />{" "}
-                    <span>{props.t("Extra pages")}</span>
+                    <Icon name="file" /> <span>{props.t("Extra pages")}</span>
                     <div className="arrow-down"></div>
                   </Link>
                   <div className={classname("dropdown-menu", { show: extra })}>
@@ -750,10 +741,14 @@ const Navbar = (props: any) => {
                           setauth(!auth);
                         }}
                       >
-                        <span data-key="t-authentication">{props.t("Authentication")}</span>{" "}
+                        <span data-key="t-authentication">
+                          {props.t("Authentication")}
+                        </span>{" "}
                         <div className="arrow-down"></div>
                       </Link>
-                      <div className={classname("dropdown-menu", { show: auth })}>
+                      <div
+                        className={classname("dropdown-menu", { show: auth })}
+                      >
                         <div className="dropdown">
                           <Link
                             className="dropdown-item dropdown-toggle arrow-none"
@@ -769,7 +764,9 @@ const Navbar = (props: any) => {
                           </Link>
                           <div
                             aria-labelledby="topnav-auth-basic"
-                            className={classname("dropdown-menu", { show: authbasic })}
+                            className={classname("dropdown-menu", {
+                              show: authbasic,
+                            })}
                           >
                             <Link
                               to="auth-signin-basic"
@@ -851,7 +848,9 @@ const Navbar = (props: any) => {
                           </Link>
                           <div
                             aria-labelledby="topnav-auth-cover"
-                            className={classname("dropdown-menu", { show: authcover })}
+                            className={classname("dropdown-menu", {
+                              show: authcover,
+                            })}
                           >
                             <Link
                               to="auth-signin-cover"
@@ -930,10 +929,14 @@ const Navbar = (props: any) => {
                           seterror(!error);
                         }}
                       >
-                        <span data-key="t-error-pages">{props.t("Error Pages")}</span>{" "}
+                        <span data-key="t-error-pages">
+                          {props.t("Error Pages")}
+                        </span>{" "}
                         <div className="arrow-down"></div>
                       </Link>
-                      <div className={classname("dropdown-menu", { show: error })}>
+                      <div
+                        className={classname("dropdown-menu", { show: error })}
+                      >
                         <div className="dropdown">
                           <Link
                             className="dropdown-item dropdown-toggle arrow-none"
@@ -944,9 +947,14 @@ const Navbar = (props: any) => {
                               seterror1(!error1);
                             }}
                           >
-                            <span>{props.t("404")}</span> <div className="arrow-down"></div>
+                            <span>{props.t("404")}</span>{" "}
+                            <div className="arrow-down"></div>
                           </Link>
-                          <div className={classname("dropdown-menu", { show: error1, })}>
+                          <div
+                            className={classname("dropdown-menu", {
+                              show: error1,
+                            })}
+                          >
                             <Link
                               to="error-404-basic"
                               className="dropdown-item"
@@ -973,9 +981,14 @@ const Navbar = (props: any) => {
                               seterror2(!error2);
                             }}
                           >
-                            <span>{props.t("500")}</span> <div className="arrow-down"></div>
+                            <span>{props.t("500")}</span>{" "}
+                            <div className="arrow-down"></div>
                           </Link>
-                          <div className={classname("dropdown-menu", { show: error2, })}>
+                          <div
+                            className={classname("dropdown-menu", {
+                              show: error2,
+                            })}
+                          >
                             <Link
                               to="error-500-basic"
                               className="dropdown-item"
@@ -1007,7 +1020,11 @@ const Navbar = (props: any) => {
                         <span data-key="t-utility">{props.t("Utility")}</span>{" "}
                         <div className="arrow-down"></div>
                       </Link>
-                      <div className={classname("dropdown-menu", { show: utility, })}>
+                      <div
+                        className={classname("dropdown-menu", {
+                          show: utility,
+                        })}
+                      >
                         <Link
                           to="pages-starter"
                           className="dropdown-item"
@@ -1045,10 +1062,8 @@ const Navbar = (props: any) => {
                         </Link>
                       </div>
                     </div>
-
                   </div>
                 </li>
-                
               </ul>
             </Collapse>
           </nav>
