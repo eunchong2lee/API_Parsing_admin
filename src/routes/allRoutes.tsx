@@ -13,8 +13,6 @@ import ErrorCover from "../pages/Error/ErrorCover";
 import Logout from "../pages/Authentication/Logout";
 
 // Productions
-import ProductionsList from "../pages/Productions/ProductionsList";
-import ProductionsRegist from "../pages/Productions/ProductionsRegist";
 import HealthFoodData from "src/pages/HealthFoodData/HealthFoodData";
 import HealthFoodDataDetail from "src/pages/HealthFoodData/HealthFoodDataDetail";
 import HealthFoodDataRegister from "src/pages/HealthFoodData/HealthFoodDataRegister";
@@ -36,10 +34,6 @@ interface RouteProps {
 const userRoutes: Array<RouteProps> = [
   // //profile
   { path: "/profile", component: UserProfile },
-
-  // Productions
-  { path: "/productions-list", component: ProductionsList },
-  { path: "/productions-regist", component: ProductionsRegist },
 
   //healthfooddata
   { path: "/HealthFoodData", component: HealthFoodData },
