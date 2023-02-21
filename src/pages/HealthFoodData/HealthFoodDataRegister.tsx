@@ -1,13 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import MetaTags from "react-meta-tags";
 import {
   Col,
   Container,
   Row,
-  InputGroup,
-  Form,
-  Label,
-  Input,
   Button,
   Modal,
   ModalHeader,
@@ -235,11 +231,6 @@ const HealthFoodDataRegister = () => {
 
   return (
     <div className="page-content">
-      <MetaTags>
-        <title>
-          User Settings | Dashonic - React Admin & Dashboard Template
-        </title>
-      </MetaTags>
       <Container fluid>
         {/* Render Breadcrumbs */}
         <Breadcrumbs title="상품등록" breadcrumbItem="상품" />

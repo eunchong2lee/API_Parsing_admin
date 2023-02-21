@@ -1,17 +1,7 @@
 import MetaTags from "react-meta-tags";
 import React, { useState } from "react";
 
-import {
-  Row,
-  Col,
-  Alert,
-  Container,
-  ModalHeader,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from "reactstrap";
+import { Row, Col, Alert, Container } from "reactstrap";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -21,18 +11,9 @@ import { withRouter, Link } from "react-router-dom";
 // availity-reactstrap-validation
 import { AvForm, AvField } from "availity-reactstrap-validation";
 
-//Social Media Imports
-import { GoogleLogin } from "react-google-login";
-
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-
 // actions
 import { loginUser, socialLogin } from "../../slices/thunks";
 import axios from "axios";
-
-//import images
-// import logoDark from "../../assets/images/bodybuddy-original-logo.png";
-// import logoLight from "../../assets/images/bodybuddy-original-logo.png";
 
 interface LoginProps {
   history: any;
@@ -102,9 +83,6 @@ const LoginPage = ({ history }: LoginProps) => {
 
   return (
     <React.Fragment>
-      <MetaTags>
-        <title>Login | Bodybuddy - React Admin</title>
-      </MetaTags>
       <div className="authentication-bg min-vh-100">
         <div className="bg-overlay bg-white"></div>
         <Container>

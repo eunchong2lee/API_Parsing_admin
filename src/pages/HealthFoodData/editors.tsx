@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Row, Button, Input } from "reactstrap";
 // Form Editor
 import { Editor } from "react-draft-wysiwyg";

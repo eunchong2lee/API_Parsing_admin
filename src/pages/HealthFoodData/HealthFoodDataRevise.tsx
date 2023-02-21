@@ -4,10 +4,7 @@ import {
   Col,
   Container,
   Row,
-  InputGroup,
   Form,
-  Label,
-  Input,
   Button,
   Modal,
   ModalHeader,
@@ -16,7 +13,7 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Dropzone from "react-dropzone";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "flatpickr/dist/themes/material_blue.css";
 
 //Import Breadcrumb
@@ -374,14 +371,9 @@ const HealthFoodDataRevise = () => {
 
   return (
     <div className="page-content">
-      <MetaTags>
-        <title>
-          User Settings | Dashonic - React Admin & Dashboard Template
-        </title>
-      </MetaTags>
       <Container fluid>
         {/* Render Breadcrumbs */}
-        <Breadcrumbs title="건강식품 관리" breadcrumbItem="건강식품" />
+        <Breadcrumbs title="건강식품 목록" breadcrumbItem="건강식품 수정" />
 
         <Row>
           <div className="col-xxl-12 col-lg-11">

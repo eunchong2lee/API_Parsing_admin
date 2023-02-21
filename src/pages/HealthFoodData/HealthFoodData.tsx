@@ -12,9 +12,6 @@ import {
 } from "reactstrap";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
-import { saveAs } from "file-saver";
-import fileDownload from "js-file-download";
-
 // add component
 
 //Import Breadcrumb
@@ -22,8 +19,6 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 import paginationFactory, {
   PaginationProvider,
-  PaginationListStandalone,
-  SizePerPageDropdownStandalone,
 } from "react-bootstrap-table2-paginator";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -391,13 +386,8 @@ const HealthFoodData = () => {
   return (
     <React.Fragment>
       <div className="page-content">
-        <MetaTags>
-          <title>
-            Advance Tables | Dashonic - React Admin & Dashboard Template
-          </title>
-        </MetaTags>
         <div className="container-fluid">
-          <Breadcrumbs title="Tables" breadcrumbItem="Advance Tables" />
+          <Breadcrumbs title="건강식품" breadcrumbItem="건강식품 목록" />
 
           <Row>
             <Col className="col-12">

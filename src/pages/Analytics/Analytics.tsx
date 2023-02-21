@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import MetaTags from "react-meta-tags";
 
 //import Breadcrumbs
 import Breadcrumbs from "../../components/Common/Breadcrumb";
@@ -31,10 +30,6 @@ const Analytics = () => {
   return (
     <React.Fragment>
       <div className="page-content">
-        <MetaTags>
-          <title>Analytics | Dashonic - React Admin & Dashboard Template</title>
-        </MetaTags>
-
         <Container fluid>
           {/* Render Breadcrumbs */}
           <Breadcrumbs title="통계" breadcrumbItem="건강식품" />

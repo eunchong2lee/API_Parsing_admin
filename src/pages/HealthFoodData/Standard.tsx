@@ -1,20 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 
 import { Row, Col, Card, CardBody, CardHeader, Button } from "reactstrap";
-import MetaTags from "react-meta-tags";
-import { Link } from "react-router-dom";
-
-//Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-
-import paginationFactory, {
-  PaginationProvider,
-  PaginationListStandalone,
-  SizePerPageDropdownStandalone,
-} from "react-bootstrap-table2-paginator";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import BootstrapTable from "react-bootstrap-table-next";
 
 const StandardComponent = () => {
   ////////////////////////////////////////////////////////////////////////
