@@ -28,7 +28,6 @@ File: Main Css File
 
 // Components
 @import "custom/components/avatar";
-@import "custom/components/alerts";
 @import "custom/components/accordion";
 @import "custom/components/helper";
 @import "custom/components/preloader";
@@ -36,8 +35,6 @@ File: Main Css File
 @import "custom/components/forms";
 @import "custom/components/widgets";
 @import "custom/components/demos";
-@import "custom/components/print";
-
 
 // Plugins
 @import "custom/plugins/custom-scrollbar";
@@ -45,7 +42,7 @@ File: Main Css File
 @import "custom/plugins/range-slider";
 @import "custom/plugins/sweatalert2";
 @import "custom/plugins/alertify";
-@import 'custom/plugins/swiper-slider';
+@import "custom/plugins/swiper-slider";
 @import "custom/plugins/choices";
 @import "custom/plugins/switch";
 @import "custom/plugins/gridjs";

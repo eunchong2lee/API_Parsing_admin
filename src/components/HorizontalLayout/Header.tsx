@@ -33,7 +33,7 @@ const Header = (props: any) => {
       <div className="navbar-header">
         <div className="d-flex">
           <div className="navbar-brand-box">
-            <Link to="/drug-table" className="logo logo-dark">
+            <Link to="/HealthFoodData" className="logo logo-dark">
               <span className="logo-sm">
                 <img src={logoSm} alt="" height="22" />
               </span>
@@ -42,7 +42,7 @@ const Header = (props: any) => {
               </span>
             </Link>
 
-            <Link to="/drug-table" className="logo logo-light">
+            <Link to="/HealthFoodData" className="logo logo-light">
               <span className="logo-sm">
                 <img src={logoSm} alt="" height="22" />
               </span>

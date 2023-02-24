@@ -394,14 +394,6 @@ const HealthFoodData = () => {
               <Card>
                 <CardHeader className="justify-content-between d-flex align-items-center">
                   <h4 className="card-title">건강식품 목록</h4>
-                  <Link
-                    to="//www.npmjs.com/package/react-super-responsive-table"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn btn-sm btn-soft-secondary"
-                  >
-                    Docs <i className="mdi mdi-arrow-right align-middle"></i>
-                  </Link>
                 </CardHeader>
                 <CardBody>
                   <Container fluid>
