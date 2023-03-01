@@ -39,4 +39,4 @@
 
 ## Links
 [Notion](https://concrete-bulb-957.notion.site/a6abcc1204e64a2d87b714e669d93858)   
-[Backend Github]((https://github.com/eunchong2lee/PrdAdmin_Backend)   
+[Backend Github](https://github.com/eunchong2lee/PrdAdmin_Backend)   
