@@ -14,7 +14,9 @@ const Analytics = () => {
   const [data, setData] = useState<any>();
 
   const getAnalytics = async () => {
-    const response = await axios.get(`http://localhost:3000/analytics`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/analytics`
+    );
     const response_data = response.data;
     setData(response_data);
   };

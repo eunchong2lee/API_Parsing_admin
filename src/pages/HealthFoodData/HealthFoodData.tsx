@@ -92,7 +92,9 @@ const HealthFoodData = () => {
   // base
   const GetLimitData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/item/limit/10/1`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/item/limit/10/1`
+      );
       const responsedata = response.data.data;
       const responseLength = response.data.dataLength;
       for (let i = 0; i < responsedata.length; i++) {
@@ -123,7 +125,7 @@ const HealthFoodData = () => {
       const date = lowData.date;
 
       const response = await axios.get(
-        `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&page=1&limit=10`
+        `${process.env.REACT_APP_API_URL}/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&page=1&limit=10`
       );
       const responsedata = response.data.data;
       for (let i = 0; i < responsedata.length; i++) {
@@ -143,7 +145,7 @@ const HealthFoodData = () => {
       setLoading(true);
 
       const response = await axios
-        .get(`http://localhost:3000/item/limit/10/${page}`)
+        .get(`${process.env.REACT_APP_API_URL}/item/limit/10/${page}`)
         .then(response => {
           const responseData = response.data.data;
           for (let i = 0; i < responseData.length; i++) {
@@ -173,7 +175,7 @@ const HealthFoodData = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:3000/search?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}&page=${page}&limit=10`
+        `${process.env.REACT_APP_API_URL}/search?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}&page=${page}&limit=10`
       );
       const responseData = response.data.data;
       for (let i = 0; i < responseData.length; i++) {
@@ -262,7 +264,7 @@ const HealthFoodData = () => {
         searchTab = "ENTRPS";
       }
       window.open(
-        `http://localhost:3000/item/file?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}`,
+        `${process.env.REACT_APP_API_URL}/item/file?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}`,
         "_blank"
       );
     } catch (err) {}

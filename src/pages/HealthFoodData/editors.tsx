@@ -28,7 +28,7 @@ const HealthFoodFormEditors = (props: any) => {
       formData.append("image", file);
       formData.append("id", "1");
       axios
-        .post(`http://localhost:3000/draft/image`, formData)
+        .post(`${process.env.REACT_APP_API_URL}/draft/image`, formData)
         .then(response => {
           resolve({ data: { link: response.data } });
           // resolve(`<img src= ${response.data}>`);

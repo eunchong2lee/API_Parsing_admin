@@ -209,7 +209,7 @@ const HealthFoodDataRegister = () => {
     formData.append("PRMS_STANDARD", JSON.stringify(parse_data));
 
     await axios
-      .post("http://localhost:3000/item", formData)
+      .post(`${process.env.REACT_APP_API_URL}/item`, formData)
       .then(response => {
         // 완료시
         // window.location.href = `/HealthFoodData`;

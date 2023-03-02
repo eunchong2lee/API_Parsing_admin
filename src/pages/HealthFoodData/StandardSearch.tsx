@@ -94,7 +94,7 @@ const StandardSearch = (props: any) => {
   // axios
   const GetStandard = async () => {
     const response: any = await axios.get(
-      `http://localhost:3000/standard?name=${data}`
+      `${process.env.REACT_APP_API_URL}/standard?name=${data}`
     );
 
     const responsedata = response.data;

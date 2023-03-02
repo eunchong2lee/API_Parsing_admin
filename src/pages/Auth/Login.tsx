@@ -32,10 +32,10 @@ const LoginPage = ({ history }: LoginProps) => {
 
   const SignIn = async () => {
     await axios
-      .post(`http://localhost:3000/auth/login`, data)
+      .post(`${process.env.REACT_APP_API_URL}/auth/login`, data)
       .then(response => {
         localStorage.setItem("accessToken", response.data.token);
-        window.location.href = `http://localhost:3100/HealthFoodData`;
+        window.location.href = `${process.env.REACT_APP_CLIENT_URL}/HealthFoodData`;
       });
   };
 

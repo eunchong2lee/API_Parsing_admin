@@ -123,7 +123,7 @@ const RegisterIndividual = () => {
 
   const checkAccount = async () => {
     await axios
-      .post(`http://localhost:3000/auth/checkaccount`, data)
+      .post(`${process.env.REACT_APP_API_URL}/auth/checkaccount`, data)
       .then(response => {
         if (response.data == 200) {
           setAccountMessage("사용 가능한 아이디 형식이에요 : )");
@@ -136,7 +136,7 @@ const RegisterIndividual = () => {
   const singUP = async () => {
     if (isAccount && isPassword) {
       await axios
-        .post(`http://localhost:3000/auth/signup`, data)
+        .post(`${process.env.REACT_APP_API_URL}/auth/signup`, data)
         .then(response => {
           setModalMessage(["성공", "회원가입에 성공했습니다."]);
           Istoggle();

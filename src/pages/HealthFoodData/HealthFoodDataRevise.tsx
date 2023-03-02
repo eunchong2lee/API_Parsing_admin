@@ -115,7 +115,7 @@ const HealthFoodDataRevise = () => {
       const url = window.location.href;
       const id = url.split("/")[url.split("/").length - 1];
       const response = await axios
-        .get(`http://localhost:3000/item/${id}`)
+        .get(`${process.env.REACT_APP_API_URL}/item/${id}`)
         .then(response => {
           if (response.data.item) {
             const responseData = response.data.item;
@@ -279,7 +279,7 @@ const HealthFoodDataRevise = () => {
     formData.append("PRMS_STANDARD", JSON.stringify(parseData));
 
     await axios
-      .put(`http://localhost:3000/item/${id}`, formData)
+      .put(`${process.env.REACT_APP_API_URL}/item/${id}`, formData)
       .then(response => {
         if (response.data.item) {
           const responseData = response.data.item;
