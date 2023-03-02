@@ -101,9 +101,7 @@ const HealthFoodData = () => {
 
       setCount(responseLength);
       setData(responsedata);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   //// search function
@@ -124,8 +122,6 @@ const HealthFoodData = () => {
       const useYN = lowData.useYN;
       const date = lowData.date;
 
-      console.log(searchTab, name, date, useYN);
-
       const response = await axios.get(
         `http://localhost:3000/search?tab=${searchTab}&name=${name}&date=${date}&useYN=${useYN}&page=1&limit=10`
       );
@@ -138,9 +134,7 @@ const HealthFoodData = () => {
       setCount(response.data.dataLength);
       goToPage(1);
       setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   // on Change page
@@ -160,9 +154,7 @@ const HealthFoodData = () => {
           goToPage(page);
           setLoading(false);
         });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   // on Change Search page
@@ -193,9 +185,7 @@ const HealthFoodData = () => {
       goToPage(page);
 
       setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   // 시간 적용
@@ -233,9 +223,7 @@ const HealthFoodData = () => {
       GetLimitSearch(low_data);
 
       setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighSetSearch = async () => {
@@ -243,9 +231,7 @@ const HealthFoodData = () => {
       setLoading(true);
       setSearchToggle(true);
       setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighSetSearchData = async (value: any, name: any) => {
@@ -254,9 +240,7 @@ const HealthFoodData = () => {
         ...searchData,
         [name]: value,
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighSetDate = async (value: any, name: any) => {
@@ -281,9 +265,7 @@ const HealthFoodData = () => {
         `http://localhost:3000/item/file?tab=${searchTab}&name=${searchData.name}&date=${searchData.date}&useYN=${searchData.useYN}`,
         "_blank"
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const columns = [

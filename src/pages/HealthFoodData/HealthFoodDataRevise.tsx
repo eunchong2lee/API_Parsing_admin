@@ -72,7 +72,6 @@ const HealthFoodDataRevise = () => {
   // low component data
   const HighEditorData = async (low_data: any) => {
     try {
-      console.log("low_data", low_data);
       if (low_data.content) {
         setContent(low_data.content);
       }
@@ -83,9 +82,7 @@ const HealthFoodDataRevise = () => {
         });
         setFile([...File, low_data.file]);
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighDeleteFile = (index: number) => {
@@ -109,9 +106,7 @@ const HealthFoodDataRevise = () => {
   const HighSearch = async (low_data: any) => {
     try {
       searchstandardChange(low_data);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   // Base Data
@@ -122,9 +117,7 @@ const HealthFoodDataRevise = () => {
       const response = await axios
         .get(`http://localhost:3000/item/${id}`)
         .then(response => {
-          console.log(response.data);
           if (response.data.item) {
-            console.log("data 받아왔습니다.");
             const responseData = response.data.item;
             setData(responseData);
             setCopyData(responseData);
@@ -174,9 +167,7 @@ const HealthFoodDataRevise = () => {
             setFile(responseData);
           }
         });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -273,7 +264,6 @@ const HealthFoodDataRevise = () => {
         formData.append("files", file);
       }
     }
-    console.log(copydata);
 
     formData.append("PRDUCT", copydata.PRDUCT);
     formData.append("STTEMNT_NO", copydata.STTEMNT_NO);
@@ -293,7 +283,7 @@ const HealthFoodDataRevise = () => {
       .then(response => {
         if (response.data.item) {
           const responseData = response.data.item;
-          console.log(responseData);
+
           setData(responseData);
           setCopyData(responseData);
           if (responseData.PRMS_STANDARD) {
@@ -335,9 +325,7 @@ const HealthFoodDataRevise = () => {
           }
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   };
 
   const deleteImage = async (i: number) => {

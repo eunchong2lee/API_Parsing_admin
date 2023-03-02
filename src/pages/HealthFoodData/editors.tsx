@@ -10,8 +10,6 @@ const HealthFoodFormEditors = (props: any) => {
   const [loading, setLoading] = useState(0);
 
   const onChangeFiles = (event: any) => {
-    console.log(event.currentTarget.files[0]);
-
     props.propFunction({ file: event.currentTarget.files[0] });
   };
 
@@ -22,41 +20,6 @@ const HealthFoodFormEditors = (props: any) => {
   const deleteFile = (index: number) => {
     props.propDeleteFunction(index);
   };
-
-  // const getContent = async () => {
-  //   await axios.get(`http://localhost:3000/draft?id=3`).then(response => {
-  //     const response_data = response.data;
-  //     console.log(response_data);
-  //     if (response_data.data.length) {
-  //       const draft_data = convertFromRaw(
-  //         JSON.parse(response_data.data[0].text)
-  //       );
-  //       const editor_data = EditorState.createWithContent(draft_data);
-  //       setContent(editor_data);
-  //     }
-  //   });
-  // };
-
-  // const postFile = async () => {
-  //   const formData = new FormData();
-  //   formData.append("file", File);
-  //   formData.append("data", "hello");
-
-  //   console.log(File);
-
-  //   await axios
-  //     .post(`http://localhost:3000/draft/file`, formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data, boundary=${form._boundary}",
-  //       },
-  //     })
-  //     .then(response => {
-  //       console.log("complete");
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
 
   const uploadCallback = async (file: Blob) => {
     return new Promise((resolve, reject) => {

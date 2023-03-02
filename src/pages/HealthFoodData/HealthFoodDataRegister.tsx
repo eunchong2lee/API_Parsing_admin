@@ -94,7 +94,6 @@ const HealthFoodDataRegister = () => {
     e: { target: { value: any; name: any } }
   ) => {
     const { value, name } = e.target;
-    console.log(value, name, index);
 
     const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
     new_inputItems[index][name] = value;
@@ -107,7 +106,6 @@ const HealthFoodDataRegister = () => {
       ...data, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
-    console.log(data);
   };
 
   function handleAcceptedFiles(files: any) {
@@ -128,7 +126,6 @@ const HealthFoodDataRegister = () => {
     const new_inputItems: any = JSON.parse(JSON.stringify(inputItems));
     new_inputItems[index]["standard"] = low_data;
     setInputItems(new_inputItems);
-    console.log(inputItems, "변경");
   };
 
   function formatBytes(bytes: any, decimals = 2) {
@@ -145,14 +142,11 @@ const HealthFoodDataRegister = () => {
   const HighSearch = (low_data: any) => {
     try {
       searchstandardChange(low_data);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighEditorData = (low_data: any) => {
     try {
-      console.log("low_data", low_data);
       if (low_data.content) {
         setContent(low_data.content);
       }
@@ -160,11 +154,7 @@ const HealthFoodDataRegister = () => {
       if (low_data.file) {
         setFile([...File, low_data.file]);
       }
-
-      console.log(content, File);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const HighDeleteFile = (index: number) => {
@@ -224,9 +214,7 @@ const HealthFoodDataRegister = () => {
         // 완료시
         // window.location.href = `/HealthFoodData`;
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   };
 
   return (

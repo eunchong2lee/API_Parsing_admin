@@ -8,11 +8,9 @@ const HealthFoodChart = (props: any) => {
 
   useEffect(() => {
     settingOption(props.date);
-    console.log(props.data);
   }, [props.date]);
 
   const settingOption = (date: string) => {
-    console.log("실행");
     let options;
     let series;
     if (date === "연도별") {
@@ -197,7 +195,6 @@ const HealthFoodChart = (props: any) => {
         const month = props_date.substr(4, 2);
         const day = props_date.substr(6, props_date.length);
         categories.push(`${year}-${month}-${day}`);
-        console.log(year, month, day);
         data.push(props_data[i - 1].cnt);
       }
       options = {

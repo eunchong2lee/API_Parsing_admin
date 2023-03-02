@@ -125,7 +125,6 @@ const RegisterIndividual = () => {
     await axios
       .post(`http://localhost:3000/auth/checkaccount`, data)
       .then(response => {
-        console.log(response.data);
         if (response.data == 200) {
           setAccountMessage("사용 가능한 아이디 형식이에요 : )");
         } else {
@@ -139,7 +138,6 @@ const RegisterIndividual = () => {
       await axios
         .post(`http://localhost:3000/auth/signup`, data)
         .then(response => {
-          console.log(response);
           setModalMessage(["성공", "회원가입에 성공했습니다."]);
           Istoggle();
           // if (response.status === 200) {

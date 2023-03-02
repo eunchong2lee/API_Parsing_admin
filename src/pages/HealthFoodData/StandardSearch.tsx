@@ -96,7 +96,6 @@ const StandardSearch = (props: any) => {
     const response: any = await axios.get(
       `http://localhost:3000/standard?name=${data}`
     );
-    console.log(response.data);
 
     const responsedata = response.data;
     SetStandard(responsedata);

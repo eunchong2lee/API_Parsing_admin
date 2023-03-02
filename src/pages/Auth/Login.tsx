@@ -28,15 +28,12 @@ const LoginPage = ({ history }: LoginProps) => {
       ...data, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
-    console.log(data);
   };
 
   const SignIn = async () => {
-    console.log(data);
     await axios
       .post(`http://localhost:3000/auth/login`, data)
       .then(response => {
-        console.log(response.data.token);
         localStorage.setItem("accessToken", response.data.token);
         window.location.href = `http://localhost:3100/HealthFoodData`;
       });
