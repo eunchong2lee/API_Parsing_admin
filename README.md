@@ -36,7 +36,10 @@
   - 컨텐츠 editor 기능 (유튜브 링크 시각화, 이미지 업로드 시각화)
 * Excel 추출 기능
   - 상세 검색 기능을 통한 원하는 데이터 Excel화
-
+  
 ## Links
-[Notion](https://concrete-bulb-957.notion.site/a6abcc1204e64a2d87b714e669d93858)   
+
+[Notion](https://concrete-bulb-957.notion.site/dc6a51a04c544f46a1ccbaf11f4f2974?pvs=4)  
+[Frontend Github](https://github.com/eunchong2lee/PrdAdmin_Frontend)
+   
 [Backend Github](https://github.com/eunchong2lee/PrdAdmin_Backend)   
